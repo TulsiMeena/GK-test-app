@@ -1,0 +1,6 @@
+{
+  "name": "GYANIX",
+  "description": "Smart GK. Smarter Preparation. Premium competitive-exam GK platform with comprehensive categories, topic drills, and full-length mock tests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

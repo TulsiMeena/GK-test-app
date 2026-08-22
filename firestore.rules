@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // GYANIX User profiles and personal data isolation
+    match /users/{userId} {
+      // Allow user to read and update their own profile document
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // Disallow accidental profile deletion
+
+      // Settings subcollection
+      match /settings/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Progress & Subject-wise performance tracking
+      match /progress/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Bookmarks collection
+      match /bookmarks/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Mistakes collection for revision drill
+      match /mistakes/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Test History collection
+      match /testHistory/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Default deny all other collections to ensure complete isolation
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

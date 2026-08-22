@@ -1,0 +1,216 @@
+package com.example.ui.data
+
+import com.example.ui.model.GkQuestion
+
+object EconomyTopic7Data {
+    val baseQuestions: List<GkQuestion> = listOf(
+            // ==================== MOCK TEST 1 (Poverty Measurement Committees & Theoretical Frameworks) ====================
+            makeEconomyQ("eco_7_m1_q1", "eco_7",
+                "भारत में ब्रिटिश काल में पहली बार वैज्ञानिक रूप से 'जेल निर्वाह लागत' (Jail Cost of Living) के आधार पर निर्धनता रेखा का आकलन किस महान राष्ट्रवादी विचारक ने अपनी पुस्तक 'Poverty and Un-British Rule in India' (1867-68) में किया था?",
+                "Who was the first Indian nationalist thinker to estimate the national poverty line based on 'Jail Cost of Living' in his historic book 'Poverty and Un-British Rule in India'?",
+                listOf("दादाभाई नौरोजी (Dadabhai Naoroji - ₹16 से ₹35 प्रति व्यक्ति प्रति वर्ष निर्धनता रेखा आकलित की)", "महात्मा गांधी", "गोपाल कृष्ण गोखले", "आर. सी. दत्त"),
+                listOf("Dadabhai Naoroji (Grand Old Man of India - formulating the Drain of Wealth theory and estimating poverty line at ₹16-₹35/year)", "Mahatma Gandhi", "Gopal Krishna Gokhale", "Romesh Chunder Dutt"),
+                0, "दादाभाई नौरोजी ने 1867-68 में पहली बार गणना की कि जेल के कैदी को जीवित रहने हेतु न्यूनतम भोजन-कपड़े पर कितना खर्च होता है और उसे राष्ट्रीय गरीबी रेखा माना।",
+                "Dadabhai Naoroji pioneered scientific poverty estimation in pre-independence India, linking mass destitution to colonial economic drainage.", "Easy"),
+
+            makeEconomyQ("eco_7_m1_q2", "eco_7",
+                "योजना आयोग द्वारा गठित 'वाई. के. अलघ समिति' (Y. K. Alagh Task Force, 1979) ने ग्रामीण और शहरी क्षेत्रों के लिए न्यूनतम दैनिक पोषण/कैलोरी की क्या सीमा निर्धारित की थी?",
+                "What minimum daily per capita nutritional calorie thresholds were prescribed by the Y. K. Alagh Task Force (1979) to demarcate the poverty line?",
+                listOf("ग्रामीण क्षेत्र: 2400 कैलोरी/दिन और शहरी क्षेत्र: 2100 कैलोरी/दिन", "ग्रामीण: 2100 कैलोरी और शहरी: 2400 कैलोरी", "ग्रामीण: 3000 कैलोरी और शहरी: 2500 कैलोरी", "दोनों क्षेत्रों हेतु 2000 कैलोरी"),
+                listOf("Rural areas: 2400 calories/day AND Urban areas: 2100 calories/day per person", "Rural: 2100 calories and Urban: 2400 calories", "Rural: 3000 calories and Urban: 2500 calories", "2000 calories uniformly across both regions"),
+                0, "ग्रामीण क्षेत्रों में भारी शारीरिक श्रम (खेती) के कारण 2400 कैलोरी तथा शहरी क्षेत्रों में अपेक्षाकृत कम शारीरिक श्रम के कारण 2100 कैलोरी न्यूनतम मानक रखा गया था।",
+                "The Alagh Task Force anchored Indian poverty line definitions to minimum physiological caloric requirements for rural and urban labor profiles.", "Easy"),
+
+            makeEconomyQ("eco_7_m1_q3", "eco_7",
+                "सुरेश तेंदुलकर समिति (Suresh Tendulkar Committee, 2005-2009) ने गरीबी रेखा के निर्धारण हेतु किस नए दृष्टिकोण को अपनाया था?",
+                "Which methodology was adopted by the Suresh Tendulkar Committee (2009) to replace the pure caloric intake anchor in poverty line determination?",
+                listOf("मासिक प्रति व्यक्ति उपभोग व्यय (MPCE - भोजन के साथ स्वास्थ्य, शिक्षा, वस्त्र व जूते पर वास्तविक घरेलू खर्च के आधार पर)", "केवल कैलोरी खपत", "व्यक्तिगत बैंक जमा", "सोने का स्वामित्व"),
+                listOf("Monthly Per Capita Consumption Expenditure (MPCE - integrating mixed reference period consumption on food, private health, and school education)", "Caloric intake alone", "Bank balance thresholds", "Gold asset ownership"),
+                0, "तेंदुलकर समिति ने 2011-12 के मूल्यों पर ग्रामीण क्षेत्र हेतु ₹816/माह (₹27.2/दिन) और शहरी क्षेत्र हेतु ₹1000/माह (₹33.3/दिन) तय किया, जिससे देश में गरीबी 21.9% आंकी गई।",
+                "The Tendulkar Committee modernized poverty measurement by incorporating essential private expenditures on healthcare and schooling alongside food baskets.", "Easy"),
+
+            makeEconomyQ("eco_7_m1_q4", "eco_7",
+                "तेंदुलकर पद्धति की आलोचना के बाद गठित 'सी. रंगराजन समिति' (C. Rangarajan Committee, 2012-2014) ने 2011-12 हेतु भारत में कुल गरीबी अनुपात कितना आकलित किया था?",
+                "Following public debate over Tendulkar thresholds, what poverty headcount ratio did the Dr. C. Rangarajan Expert Group estimate for India for 2011-12?",
+                listOf("29.5% (ग्रामीण: ₹972/माह या ₹32/दिन; शहरी: ₹1407/माह या ₹47/दिन; कुल 36.3 करोड़ गरीब)", "21.9%", "15.0%", "37.2%"),
+                listOf("29.5% (Rural threshold: ₹972/month or ₹32/day; Urban threshold: ₹1407/month or ₹47/day; estimating 363 million poor)", "21.9% (Tendulkar estimate)", "15.0%", "37.2% (Lakdawala estimate)"),
+                0, "रंगराजन समिति ने स्वतंत्र रूप से पोषण मानकों (कैलोरी + प्रोटीन + वसा) और आवश्यक गैर-खाद्य खर्च को जोड़कर अधिक यथार्थवादी गरीबी रेखा तय की थी।",
+                "The Rangarajan Committee evaluated both nutritional adequacy (calories, protein, fats) and normative essential non-food basket expenditures.", "Easy"),
+
+            makeEconomyQ("eco_7_m1_q5", "eco_7",
+                "नीति आयोग द्वारा जारी 'राष्ट्रीय बहुआयामी निर्धनता सूचकांक' (National Multidimensional Poverty Index - National MPI) में कितने आयाम और कितने संकेतक शामिल हैं?",
+                "In NITI Aayog's National Multidimensional Poverty Index (National MPI) aligned with global Alkire-Foster methodology, how many Dimensions and Indicators are evaluated?",
+                listOf("3 आयाम (स्वास्थ्य, शिक्षा, जीवन स्तर) और 12 संकेतक (वैश्विक 10 संकेतकों के अतिरिक्त 'प्रसवपूर्व देखभाल' और 'बैंक खाता' शामिल)", "3 आयाम और 10 संकेतक", "4 आयाम और 16 संकेतक", "2 आयाम और 8 संकेतक"),
+                listOf("3 Dimensions (Health, Education, Standard of Living) and 12 Indicators (adding 'Antenatal Care' and 'Bank Accounts' to global 10 indicators)", "3 Dimensions and 10 Indicators (Global MPI)", "4 Dimensions and 16 Indicators", "2 Dimensions and 8 Indicators"),
+                0, "नीति आयोग की रिपोर्ट (2024) के अनुसार भारत में 2013-14 से 2022-23 के बीच 24.8 करोड़ लोग बहुआयामी गरीबी से बाहर निकले और गरीबी 29.17% से घटकर 11.28% रह गई।",
+                "National MPI tracks overlapping deprivations across health, schooling, and household amenities (drinking water, electricity, sanitation, cooking fuel, assets).", "Easy"),
+
+            // ==================== MOCK TEST 2 (Human Development Index & Income Inequality Metrics) ====================
+            makeEconomyQ("eco_7_m2_q1", "eco_7",
+                "संयुक्त राष्ट्र विकास कार्यक्रम (UNDP) द्वारा 1990 से प्रकाशित किए जाने वाले 'मानव विकास सूचकांक' (Human Development Index - HDI) का विकास किन दो प्रसिद्ध अर्थशास्त्रियों ने किया था?",
+                "Which two renowned South Asian economists formulated the Human Development Index (HDI) introduced by the UNDP in the landmark 1990 Human Development Report?",
+                listOf("डॉ. महबूब-उल-हक (Dr. Mahbub ul Haq, पाकिस्तान) और प्रो. अमर्त्य सेन (Prof. Amartya Sen, भारत - नोबेल विजेता 1998)", "एडम स्मिथ और रिकार्डो", "कीन्स और मिल्टन फ्रीडमैन", "मनमोहन सिंह और रघुराम राजन"),
+                listOf("Dr. Mahbub ul Haq (Pakistan) and Prof. Amartya Sen (India - Nobel Laureate in Welfare Economics 1998)", "Adam Smith and David Ricardo", "John Maynard Keynes and Milton Friedman", "Dr. Manmohan Singh and Raghuram Rajan"),
+                0, "महबूब-उल-हक और अमर्त्य सेन ने साबित किया कि किसी देश की तरक्की केवल जीडीपी से नहीं बल्कि 'मानव क्षमताओं के विस्तार' और जीवन की गुणवत्ता से मापी जानी चाहिए।",
+                "Mahbub ul Haq and Amartya Sen revolutionized developmental economics by shifting policy focus from national income growth to human-centric capabilities.", "Easy"),
+
+            makeEconomyQ("eco_7_m2_q2", "eco_7",
+                "मानव विकास सूचकांक (HDI) की गणना में कौन-से 'तीन मूलभूत आयाम' (Three Dimensions) शामिल होते हैं?",
+                "What are the three fundamental core dimensions measured to calculate a country's Human Development Index (HDI) score (ranging from 0 to 1)?",
+                listOf("1. लंबा और स्वस्थ जीवन (जन्म के समय जीवन प्रत्याशा), 2. ज्ञान/शिक्षा (स्कूली शिक्षा के औसत और अपेक्षित वर्ष), 3. सभ्य जीवन स्तर (PPP$ में प्रति व्यक्ति सकल राष्ट्रीय आय - GNI)", "1. सैन्य शक्ति, 2. सोना, 3. विदेशी मुद्रा", "1. जनसंख्या, 2. क्षेत्रफल, 3. कारखाने", "1. कृषि उपज, 2. शेयर बाजार, 3. बैंक ऋण"),
+                listOf("1. Long and healthy life (Life expectancy at birth), 2. Knowledge/Education (Mean years & Expected years of schooling), 3. Decent standard of living (GNI per capita in PPP USD)", "1. Military strength, 2. Gold reserves, 3. Forex", "1. Total Population, 2. Geographic Area, 3. Factory output", "1. Agricultural yield, 2. Stock market capitalization, 3. Bank credit"),
+                0, "HDI स्कोर 0 से 1 के बीच होता है (0.800+ अति उच्च, 0.700-0.799 उच्च, 0.550-0.699 मध्यम मानव विकास श्रेणी; भारत मध्यम श्रेणी में आता है)।",
+                "HDI computes the geometric mean of normalized indices across health longevity, educational attainment, and purchasing power parity income.", "Easy"),
+
+            makeEconomyQ("eco_7_m2_q3", "eco_7",
+                "अर्थशास्त्र में किसी देश में 'आय या धन के वितरण की असमानता' (Income Inequality) को ग्राफ़िकल रूप से प्रदर्शित करने वाला वक्र कौन सा है?",
+                "Which graphical curve introduced by Max O. Lorenz in 1905 depicts the cumulative distribution of national income against the cumulative percentage of population?",
+                listOf("लॉरेंज वक्र (Lorenz Curve - 45 डिग्री की पूर्ण समता रेखा / Line of Perfect Equality से दूरी असमानता दर्शाती है)", "लाफ़र वक्र", "फिलिप्स वक्र", "कुजनेट्स वक्र"),
+                listOf("Lorenz Curve (graphing cumulative % of national income against cumulative % of households relative to the 45-degree Line of Perfect Equality)", "Laffer Curve", "Phillips Curve", "Kuznets Curve"),
+                0, "लॉरेंज वक्र 45 डिग्री की सीधी रेखा (पूर्ण समानता) से जितना अधिक दूर और झुका हुआ होगा, देश में अमीरों और गरीबों के बीच आय की खाई उतनी ही अधिक होगी।",
+                "The Lorenz Curve provides the visual bedrock for inequality economics, mapping national wealth concentration across population deciles.", "Easy"),
+
+            makeEconomyQ("eco_7_m2_q4", "eco_7",
+                "लॉरेंज वक्र के आधार पर कोराडो गिनी द्वारा विकसित 'गिनी गुणांक' (Gini Coefficient) का मान क्या दर्शाता है?",
+                "What do the extreme values 0 and 1 of the 'Gini Coefficient' (derived mathematically from the Lorenz Curve) represent in an economy?",
+                listOf("0 = पूर्ण आय समानता (Absolute Equality) और 1 = पूर्ण आय असमानता (Absolute Inequality / एक ही व्यक्ति के पास सारा धन)", "0 = पूर्ण गरीबी और 1 = पूर्ण अमीरी", "0 = शून्य मुद्रास्फीति और 1 = उच्च मुद्रास्फीति", "0 = शून्य कर और 1 = अधिकतम कर"),
+                listOf("Gini = 0 represents Perfect Absolute Income Equality; Gini = 1 represents Perfect Absolute Income Inequality (all income concentrated in one single person)", "0 = Total Poverty and 1 = Total Wealth", "0 = Zero Inflation and 1 = Hyperinflation", "0 = Zero Tax Rate and 1 = Maximum Tax Rate"),
+                0, "गिनी गुणांक 0 और 1 (या 0 से 100%) के बीच होता है; गिनी गुणांक जितना कम होगा, समाज में आर्थिक समानता उतनी ही बेहतर होगी।",
+                "The Gini Coefficient quantifies income distribution: lower scores signify egalitarian income distribution, higher scores indicate extreme wealth concentration.", "Easy"),
+
+            makeEconomyQ("eco_7_m2_q5", "eco_7",
+                "साइमन कुजनेट्स द्वारा प्रतिपादित 'कुजनेट्स वक्र' (Kuznets Curve Hypothesis) आर्थिक विकास और आय असमानता के बीच क्या संबंध बताता है?",
+                "What is the inverted U-shaped relationship postulated by Nobel Laureate Simon Kuznets between economic growth (GDP per capita) and income inequality?",
+                listOf("विकास के शुरुआती चरणों में आय असमानता पहले बढ़ती है, फिर एक चरम पर पहुंचकर औद्योगिकीकरण व कल्याण नीतियों के साथ स्वतः घटने लगती है", "विकास बढ़ने से असमानता हमेशा बढ़ती रहती है", "विकास बढ़ने से असमानता हमेशा घटती है", "दोनों में कोई संबंध नहीं है"),
+                listOf("In the early phases of economic development, income inequality initially rises, peaks at intermediate industrialization, and eventually declines as social welfare expands", "Economic growth monotonically increases inequality forever", "Economic growth instantly eliminates inequality from day one", "Zero correlation between growth and inequality"),
+                0, "कुजनेट्स वक्र उल्टा 'U' आकार का होता है; इसी प्रकार पर्यावरण कुजनेट्स वक्र (EKC) बताता है कि शुरू में प्रदूषण बढ़ता है और बाद में हरित तकनीकों से घटता है।",
+                "The Kuznets hypothesis models structural transition from agrarian parity through urbanizing inequality to mature welfare equalization.", "Moderate"),
+
+            // ==================== MOCK TEST 3 (Unemployment Types, PLFS & Labor Dynamics) ====================
+            makeEconomyQ("eco_7_m3_q1", "eco_7",
+                "भारत में राष्ट्रीय सांख्यिकी कार्यालय (NSO) द्वारा 'आवधिक श्रम बल सर्वेक्षण' (Periodic Labour Force Survey - PLFS) किस वर्ष से त्रैमासिक और वार्षिक रूप से शुरू किया गया?",
+                "In which year was the Periodic Labour Force Survey (PLFS) instituted by the NSO (MoSPI) to generate regular high-frequency employment and unemployment estimates?",
+                listOf("अप्रैल 2017 (April 2017 - पुराने 5-वार्षिक NSSO सर्वेक्षणों का स्थान लिया)", "वर्ष 2014", "वर्ष 2020", "वर्ष 2010"),
+                listOf("April 2017 (replacing the quinquennial NSSO employment surveys to provide quarterly urban and annual pan-India labor data)", "Year 2014", "Year 2020", "Year 2010"),
+                0, "PLFS शहरी क्षेत्रों हेतु हर 3 महीने में और ग्रामीण-शहरी दोनों हेतु वार्षिक आधार पर LFPR, WPR और बेरोजगारी दर (UR) के आधिकारिक आंकड़े जारी करता है।",
+                "PLFS modernized India's national labor statistical architecture, providing timely policy intelligence on formal and informal workforce dynamics.", "Easy"),
+
+            makeEconomyQ("eco_7_m3_q2", "eco_7",
+                "श्रम अर्थशास्त्र में 'श्रम बल भागीदारी दर' (Labour Force Participation Rate - LFPR) का सूत्र क्या होता है?",
+                "In labor economics, how is the Labour Force Participation Rate (LFPR) mathematically defined and calculated?",
+                listOf("(कार्यरत व्यक्ति + सक्रिय रूप से रोजगार तलाश रहे बेरोजगार व्यक्ति) / कुल कार्यशील आयु जनसंख्या (15 वर्ष और अधिक) × 100", "कुल जनसंख्या / कुल रोजगार", "केवल सरकारी नौकरी वाले / कुल लोग", "बेरोजगार / कुल देशवासी"),
+                listOf("(Employed Persons + Unemployed Persons seeking work actively) / Total Working-Age Population (aged 15+ years) × 100", "Total Population / Total Employed", "Formal Sector Employees / Total Population", "Unemployed / Gross Population"),
+                0, "श्रम बल (Labour Force) = जो काम कर रहे हैं + जो काम ढूंढ रहे हैं; जो लोग काम करने के इच्छुक नहीं हैं (जैसे विद्यार्थी, गृहणियां) वे श्रम बल से बाहर माने जाते हैं।",
+                "LFPR measures the proportion of an economy's working-age population that is actively engaged in the labor market (either working or seeking work).", "Easy"),
+
+            makeEconomyQ("eco_7_m3_q3", "eco_7",
+                "जब कोई श्रमिक एक नौकरी छोड़कर दूसरी बेहतर नौकरी की तलाश में कुछ समय के लिए बेरोजगार रहता है, तो इस अल्पकालिक बेरोजगारी को क्या कहते हैं?",
+                "What is the temporary, transitional unemployment that occurs when workers are in-between jobs, searching for better opportunities or entering the job market called?",
+                listOf("घर्षणात्मक बेरोजगारी (Frictional Unemployment / Search Unemployment)", "चक्रीय बेरोजगारी", "संरचनात्मक बेरोजगारी", "प्रच्छन्न बेरोजगारी"),
+                listOf("Frictional Unemployment (Search/Transitional unemployment arising from information frictions and normal career transitions in a dynamic economy)", "Cyclical Unemployment", "Structural Unemployment", "Disguised Unemployment"),
+                0, "घर्षणात्मक बेरोजगारी एक स्वस्थ और गतिशील अर्थव्यवस्था का स्वाभाविक हिस्सा होती है क्योंकि लोग बेहतर वेतन व करियर के लिए पुरानी नौकरी छोड़ते हैं।",
+                "Frictional unemployment represents voluntary career mobility friction where qualified workers spend time matching skills with ideal employers.", "Easy"),
+
+            makeEconomyQ("eco_7_m3_q4", "eco_7",
+                "अर्थव्यवस्था में जब बाजार में उपलब्ध नौकरियों के लिए आवश्यक कौशल (Skills) और बेरोजगार श्रमिकों के पास मौजूद कौशल के बीच 'असंतुलन' (Skill Mismatch) होता है, तो इसे क्या कहते हैं?",
+                "What form of long-term unemployment results from fundamental shifts in the industrial structure and technological mismatch between worker skills and market demand?",
+                listOf("संरचनात्मक बेरोजगारी (Structural Unemployment - जैसे ऑटोमेशन/एआई आने से पुरानी तकनीक के श्रमिकों का बेकार होना)", "चक्रीय बेरोजगारी", "मौसमी बेरोजगारी", "स्वैच्छिक बेरोजगारी"),
+                listOf("Structural Unemployment (arising from technological changes, automation, capital-intensive shifts, and geographic immobility of labor)", "Cyclical Unemployment", "Seasonal Unemployment", "Voluntary Unemployment"),
+                0, "संरचनात्मक बेरोजगारी को दूर करने हेतु कौशल विकास (Skill India, री-स्किलिंग और वोकेशनल ट्रेनिंग) सबसे प्रभावी समाधान होता है।",
+                "Structural unemployment reflects deep qualitative supply-demand skill mismatches that cannot be cured by mere macroeconomic monetary stimulus.", "Easy"),
+
+            makeEconomyQ("eco_7_m3_q5", "eco_7",
+                "व्यापार चक्र (Business Cycle) में आर्थिक मंदी (Economic Recession) के समय समग्र मांग में गिरावट के कारण पैदा होने वाली बेरोजगारी को क्या कहा जाता है?",
+                "What form of unemployment occurs during macroeconomic downturns and recessions when deficient aggregate demand leads to widespread corporate layoffs?",
+                listOf("चक्रीय बेरोजगारी (Cyclical Unemployment / Demand-Deficient Unemployment / कीन्सियन बेरोजगारी)", "संरचनात्मक बेरोजगारी", "घर्षणात्मक बेरोजगारी", "प्रच्छन्न बेरोजगारी"),
+                listOf("Cyclical Unemployment (Keynesian demand-deficient unemployment that fluctuates directly with business cycle expansions and contractions)", "Structural Unemployment", "Frictional Unemployment", "Disguised Unemployment"),
+                0, "मंदी के समय कारखानों का माल नहीं बिकता तो वे कर्मचारियों की छंटनी करते हैं; इसे दूर करने हेतु सरकार राजकोषीय प्रोत्साहन (Fiscal Stimulus) देकर मांग बढ़ाती है।",
+                "Cyclical unemployment rises when consumer spending and aggregate demand collapse, prompting counter-cyclical government spending interventions.", "Easy"),
+
+            // ==================== MOCK TEST 4 (Flagship Rural Employment, Housing & Sanitation Schemes) ====================
+            makeEconomyQ("eco_7_m4_q1", "eco_7",
+                "'महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी अधिनियम' (MGNREGA, 2005) के तहत प्रत्येक ग्रामीण परिवार को प्रति वित्तीय वर्ष कितने दिनों के अकुशल शारीरिक श्रम का कानूनी अधिकार प्राप्त है?",
+                "Under the historic Mahatma Gandhi National Rural Employment Guarantee Act (MGNREGA 2005), what statutory minimum guarantee of wage employment is provided to every rural household?",
+                listOf("कम से कम 100 दिनों का गारंटीकृत मजदूरी रोजगार (मांग करने के 15 दिनों के भीतर काम न मिलने पर 'बेरोजगारी भत्ता' पाने का कानूनी अधिकार)", "150 दिन", "200 दिन", "50 दिन"),
+                listOf("At least 100 days of guaranteed wage employment per financial year for adult members volunteering to do unskilled manual labor", "150 days", "200 days", "50 days"),
+                0, "मनरेगा 2 फरवरी 2006 को बांदावली (अनंतपुर, AP) से शुरू हुआ था; इसमें कम से कम 1/3 लाभार्थी महिलाएं होना अनिवार्य है और मजदूरी सीधे आधार-लिंक्ड बैंक खातों में जाती है।",
+                "MGNREGA is the world's largest rights-based social safety net, embedding social audits, 33% gender quota, and statutory unemployment allowances.", "Easy"),
+
+            makeEconomyQ("eco_7_m4_q2", "eco_7",
+                "ग्रामीण और शहरी निर्धनों को पक्के मकान उपलब्ध कराने हेतु 2015-16 में शुरू की गई 'प्रधानमंत्री आवास योजना' (PMAY - ग्रामीण एवं शहरी) के तहत ग्रामीण क्षेत्रों में प्रति मकान कितनी मैदानी सहायता दी जाती है?",
+                "Under Pradhan Mantri Awaas Yojana - Gramin (PMAY-G), what unit financial grant is provided to eligible BPL rural beneficiaries to construct a 25 sq.m disaster-resilient pucca house?",
+                listOf("मैदानी क्षेत्रों में ₹1.20 लाख और पहाड़ी/दुर्गम/पूर्वोत्तर क्षेत्रों में ₹1.30 लाख (साथ में मनरेगा के तहत 90-95 दिन की मजदूरी और ₹12,000 शौचालय सहायता)", "₹50,000", "₹2.50 लाख", "₹75,000"),
+                listOf("₹1.20 Lakh in plain areas and ₹1.30 Lakh in hilly/difficult/NE states (plus 90-95 mandays of MGNREGA wages and ₹12,000 for toilet under SBM)", "₹50,000", "₹2.50 Lakh", "₹75,000"),
+                0, "PMAY-G में मकान का मालिकाना हक घर की महिला सदस्य के नाम या संयुक्त नाम पर अनिवार्य किया गया है और राशि DBT द्वारा सीधे बैंक खाते में भेजी जाती है।",
+                "PMAY-G empowers marginalized rural families with secure home ownership, integrating sanitation, piped water (JJM), clean cooking gas, and electricity.", "Easy"),
+
+            makeEconomyQ("eco_7_m4_q3", "eco_7",
+                "भारत में खुले में शौच से मुक्ति (ODF) और सार्वभौमिक स्वच्छता प्राप्त करने हेतु 2 अक्टूबर 2014 को शुरू किए गए 'स्वच्छ भारत मिशन' (SBM) के तहत ग्रामीण भारत को आधिकारिक रूप से ODF कब घोषित किया गया?",
+                "Under the historic Swachh Bharat Mission (SBM) launched on 2 October 2014, on which date was rural India officially declared 100% Open Defecation Free (ODF)?",
+                listOf("2 अक्टूबर 2019 (महात्मा गांधी की 150वीं जयंती पर - 10 करोड़ से अधिक घरेलू शौचालयों का निर्माण)", "15 अगस्त 2022", "26 जनवरी 2020", "2 अक्टूबर 2015"),
+                listOf("2 October 2019 (commemorating the 150th birth anniversary of Mahatma Gandhi, following construction of over 100 million household toilets)", "15 August 2022", "26 January 2020", "2 October 2015"),
+                0, "स्वच्छ भारत मिशन ने दुनिया के सबसे बड़े व्यवहार परिवर्तन (Behavior Change) आंदोलन का नेतृत्व किया; वर्तमान में SBM-ग्रामीण चरण-II (ODF Plus: ठोस व तरल अपशिष्ट प्रबंधन) चल रहा है।",
+                "Swachh Bharat Mission transformed public health and sanitation hygiene across rural and urban landscapes through unprecedented grassroots behavioral mobilization.", "Easy"),
+
+            makeEconomyQ("eco_7_m4_q4", "eco_7",
+                "15 अगस्त 2019 को लाल किले से घोषित 'जल जीवन मिशन' (Jal Jeevan Mission - JJM) का मुख्य लक्ष्य क्या है?",
+                "What is the core mandate of the flagship Jal Jeevan Mission (JJM) administered by the Ministry of Jal Shakti?",
+                listOf("देश के प्रत्येक ग्रामीण परिवार को वर्ष 2024 तक नल से सुरक्षित और पर्याप्त पेयजल (55 लीटर प्रति व्यक्ति प्रतिदिन - lpcd) उपलब्ध कराना ('हर घर जल')", "केवल कुएं खोदना", "नदियों को जोड़ना", "शहरी सीवेज साफ करना"),
+                listOf("Providing functional household tap connection (FHTC) with safe potable drinking water at the rate of 55 litres per capita per day (lpcd) to every rural home ('Har Ghar Jal')", "Drilling tubewells exclusively", "Interlinking national rivers", "Urban sewage treatment only"),
+                0, "जल जीवन मिशन ने देश में ग्रामीण नल जल कवरेज को 17% (2019) से बढ़ाकर 75% से अधिक कर दिया है; गोवा, तेलंगाना, गुजरात और हरियाणा शत-प्रतिशत 'हर घर जल' प्रमाणित राज्य बने।",
+                "Jal Jeevan Mission liberates rural women from the daily drudgery of fetching water, significantly reducing water-borne pediatric mortality.", "Easy"),
+
+            makeEconomyQ("eco_7_m4_q5", "eco_7",
+                "'राष्ट्रीय खाद्य सुरक्षा अधिनियम' (National Food Security Act - NFSA, 2013) के तहत देश की कितनी जनसंख्या को कानूनी रूप से रियायती खाद्यान्न पाने का अधिकार दिया गया है?",
+                "Under the National Food Security Act (NFSA 2013), what proportion of the Indian population is legally entitled to subsidized foodgrains through the Targeted PDS?",
+                listOf("ग्रामीण जनसंख्या का 75% और शहरी जनसंख्या का 50% (देश की कुल जनसंख्या का लगभग दो-तिहाई / 67.5% हिस्सा; ~81.35 करोड़ लोग)", "कुल जनसंख्या का 25%", "केवल 10% सबसे गरीब", "शत-प्रतिशत 100% लोग"),
+                listOf("Up to 75% of the rural population and 50% of the urban population (covering approximately two-thirds / 67.5% of India's aggregate population; ~81.35 Crore people)", "25% of national population", "Top 10% poorest exclusively", "100% universal coverage"),
+                0, "NFSA के तहत प्राथमिकता परिवारों को प्रति व्यक्ति 5 किग्रा/माह और अंत्योदय परिवारों (AAY) को 35 किग्रा/माह खाद्यान्न मिलता है; PMGKAY के तहत 2024 से 2028 तक यह शत-प्रतिशत मुफ्त कर दिया गया है।",
+                "NFSA converts state food assistance from a welfare charity into an enforceable statutory legal right anchored to life-cycle nutritional security.", "Easy"),
+
+            // ==================== MOCK TEST 5 (Financial Inclusion, JAM Trinity & Ayushman Bharat) ====================
+            makeEconomyQ("eco_7_m5_q1", "eco_7",
+                "28 अगस्त 2014 को 'मेरा खाता, भाग्य विधाता' नारे के साथ शुरू की गई दुनिया की सबसे बड़ी वित्तीय समावेशन योजना कौन सी है?",
+                "Launched on 28 August 2014 with the slogan 'Mera Khata, Bhagya Vidhata', which is the world's largest financial inclusion program registered in Guinness World Records?",
+                listOf("प्रधानमंत्री जन धन योजना (PMJDY - Pradhan Mantri Jan Dhan Yojana; 53+ करोड़ बैंक खाते खोले गए, 55%+ महिला खाते)", "पीएम जीवन ज्योति योजना", "अटल पेंशन योजना", "मुद्रा योजना"),
+                listOf("Pradhan Mantri Jan Dhan Yojana (PMJDY - opening over 53 Crore zero-balance bank accounts with over ₹2.3 Lakh Crore deposits, 55%+ women account holders)", "PM Jeevan Jyoti Bima Yojana", "Atal Pension Yojana", "PM MUDRA Scheme"),
+                0, "जन धन योजना ने प्रत्येक परिवार को जीरो-बैलेंस खाता, रूपे डेबिट कार्ड, ₹2 लाख का मुफ्त दुर्घटना बीमा और ₹10,000 की ओवरड्राफ्ट सुविधा देकर बैंकिंग से जोड़ा।",
+                "PMJDY provided the universal banking foundation for India's digital welfare revolution, completely eradicating physical financial untouchability.", "Easy"),
+
+            makeEconomyQ("eco_7_m5_q2", "eco_7",
+                "भारत में सरकारी कल्याणकारी योजनाओं के धन को बिना बिचौलियों के सीधे लाभार्थी के बैंक खाते में भेजने वाली 'जैम त्रिमूर्ति' (JAM Trinity) का पूर्ण रूप क्या है?",
+                "What three interconnected technological components constitute the transformative 'JAM Trinity' conceptualized in the Economic Survey 2014-15?",
+                listOf("जन धन (Jan Dhan Bank Accounts), आधार (Aadhaar Biometric ID), और मोबाइल (Mobile Connectivity)", "जॉब, एसेट, मनी", "जस्टिस, एक्सेस, मोबिलिटी", "ज्वाइंट एकाउंट मैनेजमेंट"),
+                listOf("Jan Dhan (Universal Banking Accounts), Aadhaar (Unique Biometric Identity), and Mobile (Telecommunications digital connectivity)", "Job, Asset, and Money", "Justice, Access, and Mobility", "Joint Account Management System"),
+                0, "JAM ट्रिनिटी ने डायरेक्ट बेनिफिट ट्रांसफर (DBT) को संभव बनाया, जिससे अब तक ₹35 लाख करोड़ से अधिक की सब्सिडी सीधे खातों में भेजी जा चुकी है और ₹2.7 लाख करोड़ का फर्जीवाड़ा रुका है।",
+                "The JAM Trinity created frictionless digital rails for leak-proof welfare delivery, bypassing middlemen and eliminating ghost beneficiaries.", "Easy"),
+
+            makeEconomyQ("eco_7_m5_q3", "eco_7",
+                "23 सितंबर 2018 को रांची (झारखंड) से शुरू की गई 'आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना' (AB-PMJAY) के तहत प्रति परिवार प्रतिवर्ष कितना स्वास्थ्य बीमा कवर दिया जाता है?",
+                "Under the world's largest government-funded health assurance scheme 'Ayushman Bharat - PMJAY' launched in September 2018, what annual health cover is provided per eligible family?",
+                listOf("₹5,00,000 (₹5 लाख प्रति वर्ष प्रति परिवार - द्वितीयक और तृतीयक स्तर के अस्पताल में भर्ती / कैशलेस और पेपरलेस इलाज)", "₹2,00,000 प्रति वर्ष", "₹10,00,000 प्रति वर्ष", "₹1,00,000 प्रति वर्ष"),
+                listOf("₹5,00,000 per family per year for secondary and tertiary care hospitalization across 28,000+ empanelled public and private hospitals (cashless and paperless)", "₹2,00,000 per family per year", "₹10,00,000 per family per year", "₹1,00,000 per family per year"),
+                0, "PM-JAY देश के 12 करोड़ से अधिक गरीब व वंचित परिवारों (लगभग 55 करोड़ नागरिकों + 70 वर्ष से अधिक के सभी वरिष्ठ नागरिकों) को कवर करती है।",
+                "PM-JAY protects vulnerable households from catastrophic health spending that previously pushed 60 million Indians into extreme poverty annually.", "Easy"),
+
+            makeEconomyQ("eco_7_m5_q4", "eco_7",
+                "भारत में 18 से 50 वर्ष की आयु के नागरिकों हेतु मात्र ₹436 प्रति वर्ष के प्रीमियम पर ₹2 लाख का जीवन बीमा देने वाली केंद्र सरकार की योजना कौन सी है?",
+                "Which government-backed life insurance scheme offers ₹2 Lakh renewable life cover (death due to any cause) for an annual premium of ₹436 for individuals aged 18 to 50 years?",
+                listOf("प्रधानमंत्री जीवन ज्योति बीमा योजना (PMJJBY - Pradhan Mantri Jeevan Jyoti Bima Yojana)", "प्रधानमंत्री सुरक्षा बीमा योजना (PMSBY - केवल ₹20/वर्ष में दुर्घटना बीमा)", "आयुष्मान भारत", "अटल पेंशन योजना"),
+                listOf("Pradhan Mantri Jeevan Jyoti Bima Yojana (PMJJBY - providing ₹2 Lakh life cover for an annual auto-debited premium of ₹436)", "Pradhan Mantri Suraksha Bima Yojana (PMSBY - ₹2 Lakh accidental death/disability cover for ₹20/year)", "Ayushman Bharat", "Atal Pension Yojana"),
+                0, "PMJJBY जीवन बीमा (₹436/वर्ष) और PMSBY दुर्घटना बीमा (मात्र ₹20/वर्ष) ने देश के करोड़ों असंगठित कामगारों और निर्धनों को न्यूनतम लागत पर सामाजिक सुरक्षा कवच दिया है।",
+                "PMJJBY and PMSBY democratize micro-insurance penetration across rural heartlands through automated bank account debit mandates.", "Easy"),
+
+            makeEconomyQ("eco_7_m5_q5", "eco_7",
+                "असंगठित क्षेत्र के कामगारों (18 से 40 वर्ष की आयु) को 60 वर्ष की आयु के बाद ₹1,000 से ₹5,000 प्रतिमाह की गारंटीकृत न्यूनतम पेंशन देने वाली प्रमुख योजना कौन सी है?",
+                "Which social security pension scheme launched in May 2015 guarantees a monthly lifelong pension of ₹1,000 to ₹5,000 after the age of 60 for unorganized workers aged 18-40?",
+                listOf("अटल पेंशन योजना (Atal Pension Yojana - APY; PFRDA द्वारा संचालित / 6.5+ करोड़ अंशधारक)", "राष्ट्रीय पेंशन प्रणाली (NPS)", "ईपीएफओ (EPFO)", "कर्मचारी भविष्य निधि"),
+                listOf("Atal Pension Yojana (APY - administered by PFRDA, delivering guaranteed monthly lifelong pensions based on subscriber contribution matrices)", "National Pension System (NPS)", "Employees' Provident Fund (EPFO)", "Public Provident Fund (PPF)"),
+                0, "अटल पेंशन योजना में ग्राहक की मृत्यु के बाद उसके जीवनसाथी (पति/पत्नी) को वही पेंशन आजीवन मिलती है और दोनों की मृत्यु के बाद पूरा संचित फंड नामांकित वारिस को सौंप दिया जाता है।",
+                "Atal Pension Yojana shields unorganized informal workers from old-age income poverty, institutionalizing universal demographic social security.", "Easy")
+        )
+
+    val questions: List<GkQuestion> by lazy {
+        EconomyQuestionHelper.generateTopicMocks("eco_7", 1, 5, baseQuestions)
+    }
+}

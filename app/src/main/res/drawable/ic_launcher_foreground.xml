@@ -1,0 +1,50 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Glowing Base Circle / Aura -->
+    <path
+        android:pathData="M54,26 C69.46,26 82,38.54 82,54 C82,69.46 69.46,82 54,82 C38.54,82 26,69.46 26,54 C26,38.54 38.54,26 54,26 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="26"
+                android:startY="26"
+                android:endX="82"
+                android:endY="82"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#3322D3EE" />
+                <item android:offset="1.0" android:color="#111E3A8A" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Outer Modern Stylized "G" Loop -->
+    <path
+        android:pathData="M66,38 L48,38 C39.16,38 32,45.16 32,54 C32,62.84 39.16,70 48,70 L64,70 C69.52,70 74,65.52 74,60 L74,52 L54,52 L54,58 L68,58 L68,60 C68,62.21 66.21,64 64,64 L48,64 C42.48,64 38,59.52 38,54 C38,48.48 42.48,44 48,44 L66,44 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="32"
+                android:startY="38"
+                android:endX="74"
+                android:endY="70"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF38BDF8" />
+                <item android:offset="0.5" android:color="#FF22D3EE" />
+                <item android:offset="1.0" android:color="#FF60A5FA" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Upward Knowledge Arrow / Spark Accent -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M54,29 L57.5,37.5 L66,41 L57.5,44.5 L54,53 L50.5,44.5 L42,41 L50.5,37.5 Z" />
+
+    <!-- Open Book Lower Wing Detail -->
+    <path
+        android:fillColor="#9938BDF8"
+        android:pathData="M40,73 L54,77 L68,73 L68,76 L54,80 L40,76 Z" />
+</vector>

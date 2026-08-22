@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">GYANIX</string>
+    <string name="tagline">Smart GK. Smarter Preparation.</string>
+    
+    <!-- Navigation Tabs -->
+    <string name="nav_home">Home</string>
+    <string name="nav_practice">Practice</string>
+    <string name="nav_tests">Tests</string>
+    <string name="nav_progress">Progress</string>
+    <string name="nav_profile">Profile</string>
+    
+    <!-- Hero & Actions -->
+    <string name="hero_title">Ready to test your knowledge?</string>
+    <string name="hero_subtitle">Target: UPSC, SSC CGL, State PSC &amp; Defense</string>
+    <string name="btn_start_test">Start Test</string>
+    <string name="btn_continue">Continue</string>
+    <string name="btn_practice">Practice</string>
+    <string name="btn_mock_test">Mock Test</string>
+    <string name="btn_wrong_questions">Revision (Mistakes)</string>
+    <string name="btn_bookmarks">Bookmarks</string>
+    
+    <!-- Categories -->
+    <string name="cat_indian_history">Indian History</string>
+    <string name="cat_polity">Indian Polity &amp; Constitution</string>
+    <string name="cat_geography">Indian Geography</string>
+    <string name="cat_science">General Science</string>
+    <string name="cat_economy">Indian Economy</string>
+    <string name="cat_world_gk">World GK</string>
+    <string name="cat_sports">Sports</string>
+    <string name="cat_art_culture">Art &amp; Culture</string>
+    <string name="cat_static_gk">Static GK</string>
+    <string name="cat_rajasthan_gk">Rajasthan GK</string>
+</resources>
