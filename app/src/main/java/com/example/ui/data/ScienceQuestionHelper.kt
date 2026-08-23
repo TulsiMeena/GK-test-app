@@ -31,3 +31,16 @@ object ScienceQuestionHelper {
         )
     }
 }
+
+fun makeScienceQ(
+    id: String,
+    topicId: String,
+    qHi: String,
+    qEn: String,
+    optsHi: List<String>,
+    optsEn: List<String>,
+    ansIdx: Int,
+    expHi: String,
+    expEn: String,
+    diff: String = "Moderate"
+): GkQuestion = ScienceQuestionHelper.makeScienceQ(id, topicId, qHi, qEn, optsHi, optsEn, ansIdx, expHi, expEn, diff)
