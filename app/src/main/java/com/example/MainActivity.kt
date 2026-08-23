@@ -142,12 +142,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        QuizQuestionDatabase.initialize(this)
-        GyanixNotificationService.initializeChannel(this)
+        try {
+            QuizQuestionDatabase.initialize(this)
+            GyanixNotificationService.initializeChannel(this)
+        } catch (e: Throwable) {
+            // Non-fatal, app continues
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+            try {
+                if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+                }
+            } catch (e: Throwable) {
+                // Non-fatal
             }
         }
 
@@ -239,9 +247,28 @@ class MainActivity : ComponentActivity() {
                 GyanixScreen.PRACTICE_SESSION
             )
 
-            // Android Hardware / Gesture Back Handling
-            BackHandler(enabled = !isRootOrFullScreen) {
-                navigateBack()
+            var lastBackPressTime by remember { androidx.compose.runtime.mutableLongStateOf(0L) }
+            val coroutineScope = rememberCoroutineScope()
+
+            // Android Hardware / Gesture Back Handling with Exit Protection
+            BackHandler(enabled = true) {
+                if (!isRootOrFullScreen) {
+                    navigateBack()
+                } else if (currentScreen == GyanixScreen.HOME) {
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastBackPressTime < 2000) {
+                        (context as? android.app.Activity)?.finish()
+                    } else {
+                        lastBackPressTime = currentTime
+                        android.widget.Toast.makeText(
+                            context,
+                            "Press back again to exit (ऐप बंद करने के लिए दोबारा दबाएं)",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else if (navigationStack.size > 1) {
+                    navigateBack()
+                }
             }
 
             GyanixTheme(darkTheme = isDarkTheme) {
@@ -499,6 +526,12 @@ fun GyanixAppContainer(
                         },
                         onNavigateToSignup = {
                             onNavigateTo(GyanixScreen.SIGNUP)
+                        },
+                        onContinueAsGuest = {
+                            coroutineScope.launch {
+                                authRepository.continueAsGuest()
+                                onSetScreen(GyanixScreen.HOME, listOf(GyanixScreen.HOME))
+                            }
                         }
                     )
 

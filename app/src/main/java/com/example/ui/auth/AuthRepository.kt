@@ -21,6 +21,7 @@ interface AuthRepository {
     fun setOnboardingCompleted(completed: Boolean)
     suspend fun signUp(fullName: String, email: String, password: String): AuthResult<GyanixUser>
     suspend fun signIn(email: String, password: String): AuthResult<GyanixUser>
+    suspend fun continueAsGuest(): AuthResult<GyanixUser>
     suspend fun signOut()
     suspend fun sendPasswordReset(email: String): AuthResult<String>
     fun getCurrentUser(): GyanixUser?
@@ -169,6 +170,20 @@ class FirebaseAuthRepository(
         } catch (e: Exception) {
             AuthResult.Error(e.message ?: "Sign in failed. Please try again.")
         }
+    }
+
+    override suspend fun continueAsGuest(): AuthResult<GyanixUser> = withContext(Dispatchers.IO) {
+        val guestUser = GyanixUser(
+            uid = "guest_user",
+            displayName = "GK Aspirant",
+            email = "guest@gyanix.app",
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+        setOnboardingCompleted(true)
+        com.example.services.GyanixNotificationService.switchUser("guest_user", context)
+        _authState.value = AuthState.Authenticated(guestUser)
+        AuthResult.Success(guestUser)
     }
 
     override suspend fun signOut() = withContext(Dispatchers.IO) {

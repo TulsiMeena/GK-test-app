@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.School
@@ -64,6 +65,7 @@ import com.example.ui.theme.RoyalBlue700
 fun AuthWelcomeScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToSignup: () -> Unit,
+    onContinueAsGuest: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -256,6 +258,30 @@ fun AuthWelcomeScreen(
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                             color = Color.White
+                        )
+                    )
+                }
+
+                // Action 3: Continue as Guest / Explore
+                androidx.compose.material3.TextButton(
+                    onClick = onContinueAsGuest,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .testTag("welcome_guest_button")
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Explore,
+                        contentDescription = null,
+                        tint = ElectricCyan400,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Continue as Guest (अतिथि के रूप में जारी रखें)",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = ElectricCyan400
                         )
                     )
                 }

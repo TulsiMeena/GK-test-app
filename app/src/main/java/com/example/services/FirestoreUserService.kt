@@ -1,5 +1,6 @@
 package com.example.services
 
+import android.util.Log
 import com.example.ui.auth.GyanixUser
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
@@ -12,41 +13,48 @@ import kotlinx.coroutines.tasks.await
  * Dedicated service for managing User Profile and Firestore subcollections.
  * Keeps user data completely isolated under users/{uid}/...
  */
-class FirestoreUserService(
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-) {
+class FirestoreUserService {
 
-    private val usersCollection: CollectionReference
-        get() = firestore.collection("users")
+    private val firestore: FirebaseFirestore? by lazy {
+        try {
+            FirebaseFirestore.getInstance()
+        } catch (e: Throwable) {
+            Log.e("FirestoreUserService", "FirebaseFirestore not available: ${e.message}")
+            null
+        }
+    }
+
+    private val usersCollection: CollectionReference?
+        get() = firestore?.collection("users")
 
     /**
      * Gets user document reference for a given UID.
      */
-    fun getUserDocument(uid: String): DocumentReference {
-        return usersCollection.document(uid)
+    fun getUserDocument(uid: String): DocumentReference? {
+        return usersCollection?.document(uid)
     }
 
     /**
      * Subcollections under users/{uid}
      */
-    fun getSettingsCollection(uid: String): CollectionReference {
-        return getUserDocument(uid).collection("settings")
+    fun getSettingsCollection(uid: String): CollectionReference? {
+        return getUserDocument(uid)?.collection("settings")
     }
 
-    fun getProgressCollection(uid: String): CollectionReference {
-        return getUserDocument(uid).collection("progress")
+    fun getProgressCollection(uid: String): CollectionReference? {
+        return getUserDocument(uid)?.collection("progress")
     }
 
-    fun getBookmarksCollection(uid: String): CollectionReference {
-        return getUserDocument(uid).collection("bookmarks")
+    fun getBookmarksCollection(uid: String): CollectionReference? {
+        return getUserDocument(uid)?.collection("bookmarks")
     }
 
-    fun getMistakesCollection(uid: String): CollectionReference {
-        return getUserDocument(uid).collection("mistakes")
+    fun getMistakesCollection(uid: String): CollectionReference? {
+        return getUserDocument(uid)?.collection("mistakes")
     }
 
-    fun getTestHistoryCollection(uid: String): CollectionReference {
-        return getUserDocument(uid).collection("testHistory")
+    fun getTestHistoryCollection(uid: String): CollectionReference? {
+        return getUserDocument(uid)?.collection("testHistory")
     }
 
     /**
@@ -59,6 +67,15 @@ class FirestoreUserService(
         email: String
     ): GyanixUser {
         val userDoc = getUserDocument(uid)
+        if (userDoc == null) {
+            return GyanixUser(
+                uid = uid,
+                displayName = displayName.trim(),
+                email = email.trim(),
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis()
+            )
+        }
         try {
             val snapshot = userDoc.get().await()
             if (snapshot.exists()) {
@@ -108,8 +125,9 @@ class FirestoreUserService(
      * Fetches the user's profile from Firestore.
      */
     suspend fun getUserProfile(uid: String, fallbackEmail: String = "", fallbackName: String = ""): GyanixUser? {
+        val userDoc = getUserDocument(uid) ?: return null
         return try {
-            val snapshot = getUserDocument(uid).get().await()
+            val snapshot = userDoc.get().await()
             if (snapshot.exists()) {
                 val name = snapshot.getString("displayName") ?: fallbackName
                 val mail = snapshot.getString("email") ?: fallbackEmail
@@ -134,12 +152,13 @@ class FirestoreUserService(
      * Updates display name in Firestore.
      */
     suspend fun updateDisplayName(uid: String, newName: String) {
+        val userDoc = getUserDocument(uid) ?: return
         try {
             val updates = mapOf(
                 "displayName" to newName.trim(),
                 "updatedAt" to Timestamp.now()
             )
-            getUserDocument(uid).set(updates, SetOptions.merge()).await()
+            userDoc.set(updates, SetOptions.merge()).await()
         } catch (e: Exception) {
             // Log or pass
         }
