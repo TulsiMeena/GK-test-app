@@ -218,7 +218,17 @@ class MainActivity : ComponentActivity() {
 
             fun navigateTo(screen: GyanixScreen) {
                 if (screen != currentScreen) {
-                    navigationStack = navigationStack + screen
+                    val rootTabs = listOf(GyanixScreen.HOME, GyanixScreen.CATEGORIES, GyanixScreen.PRACTICE, GyanixScreen.TESTS, GyanixScreen.PROGRESS, GyanixScreen.PROFILE)
+                    navigationStack = if (screen in rootTabs && currentScreen in rootTabs) {
+                        // When switching between top-level bottom nav tabs, keep HOME as the base root
+                        if (screen == GyanixScreen.HOME) {
+                            listOf(GyanixScreen.HOME)
+                        } else {
+                            listOf(GyanixScreen.HOME, screen)
+                        }
+                    } else {
+                        navigationStack + screen
+                    }
                     currentScreen = screen
                 }
             }
@@ -229,11 +239,12 @@ class MainActivity : ComponentActivity() {
                     navigationStack = newStack
                     currentScreen = newStack.last()
                 } else {
-                    currentScreen = when {
+                    val fallbackScreen = when {
                         !authRepository.isOnboardingCompleted -> GyanixScreen.ONBOARDING
                         authState !is AuthState.Authenticated -> GyanixScreen.AUTH_WELCOME
                         else -> GyanixScreen.HOME
                     }
+                    setScreen(fallbackScreen, listOf(fallbackScreen))
                 }
             }
 
@@ -272,6 +283,16 @@ class MainActivity : ComponentActivity() {
                         GyanixScreen.FORGOT_PASSWORD -> {
                             // Safely navigate back to Auth Welcome screen
                             setScreen(GyanixScreen.AUTH_WELCOME, listOf(GyanixScreen.AUTH_WELCOME))
+                        }
+                        GyanixScreen.CATEGORIES,
+                        GyanixScreen.PRACTICE,
+                        GyanixScreen.TESTS,
+                        GyanixScreen.PROGRESS,
+                        GyanixScreen.PROFILE,
+                        GyanixScreen.NOTIFICATIONS,
+                        GyanixScreen.SEARCH -> {
+                            // Secondary main screens always safely return to HOME
+                            setScreen(GyanixScreen.HOME, listOf(GyanixScreen.HOME))
                         }
                         GyanixScreen.HOME,
                         GyanixScreen.AUTH_WELCOME,
