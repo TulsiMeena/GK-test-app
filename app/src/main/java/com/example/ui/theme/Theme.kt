@@ -89,11 +89,25 @@ fun GyanixTheme(
 
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.background.toArgb()
-            window.navigationBarColor = colorScheme.surface.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+            val activity = (view.context as? Activity)
+                ?: (view.context as? android.content.ContextWrapper)?.let {
+                    var ctx: android.content.Context? = it
+                    while (ctx is android.content.ContextWrapper) {
+                        if (ctx is Activity) return@let ctx
+                        ctx = ctx.baseContext
+                    }
+                    null
+                }
+            activity?.window?.let { window ->
+                try {
+                    window.statusBarColor = colorScheme.background.toArgb()
+                    window.navigationBarColor = colorScheme.surface.toArgb()
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+                } catch (e: Throwable) {
+                    // Safe handling for custom embed environments
+                }
+            }
         }
     }
 

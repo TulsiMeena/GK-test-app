@@ -65,6 +65,7 @@ import com.example.ui.theme.RoyalBlue700
 fun AuthWelcomeScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToSignup: () -> Unit,
+    onContinueAsGuest: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -257,6 +258,30 @@ fun AuthWelcomeScreen(
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                             color = Color.White
+                        )
+                    )
+                }
+
+                // Action 3: Continue as Guest
+                androidx.compose.material3.TextButton(
+                    onClick = onContinueAsGuest,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                        .testTag("welcome_guest_button")
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Explore,
+                        contentDescription = null,
+                        tint = ElectricCyan400,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Explore as Guest (अतिथि के रूप में जारी रखें)",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = ElectricCyan400,
+                            fontWeight = FontWeight.SemiBold
                         )
                     )
                 }

@@ -572,6 +572,12 @@ fun GyanixAppContainer(
                         },
                         onNavigateToSignup = {
                             onNavigateTo(GyanixScreen.SIGNUP)
+                        },
+                        onContinueAsGuest = {
+                            coroutineScope.launch {
+                                authRepository.continueAsGuest()
+                                onSetScreen(GyanixScreen.HOME, listOf(GyanixScreen.HOME))
+                            }
                         }
                     )
 
