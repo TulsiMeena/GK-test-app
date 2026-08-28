@@ -98,36 +98,43 @@ object GyanixNotificationService {
         val shortMessage = "Amit Meena (App Owner) welcomes you to GYANIX GK Championship!"
         val fullMessage = "नमस्ते $cleanName!\n\nGYANIX परिवार में आपका हार्दिक स्वागत है। मैं अमित मीणा (Amit Meena - App Owner & Founder), आपके सभी आगामी प्रतियोगी परीक्षाओं में सर्वोच्च सफलता की कामना करता हूँ।\n\nआपकी तैयारी को मजबूत बनाने के लिए ऐप में 10,500+ GK प्रश्न और 700+ मॉक टेस्ट जोड़े गए हैं। Best of luck for your preparation!"
 
-        // 1. Android System Push Notification
+        // 1. Android System Push Notification (Only post if allowed & safe)
         try {
-            val intent = Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-            val pendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle(title)
-                .setContentText(shortMessage)
-                .setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .setBigContentTitle("🎉 Welcome from Amit Meena (App Owner)")
-                        .bigText(fullMessage)
-                        .setSummaryText("GYANIX Official Notification")
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                androidx.core.content.ContextCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                val intent = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                val pendingIntent = PendingIntent.getActivity(
+                    context,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
 
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(NOTIFICATION_ID_WELCOME, builder.build())
-        } catch (e: Exception) {
+                val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                    .setContentTitle(title)
+                    .setContentText(shortMessage)
+                    .setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .setBigContentTitle("🎉 Welcome from Amit Meena (App Owner)")
+                            .bigText(fullMessage)
+                            .setSummaryText("GYANIX Official Notification")
+                    )
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+
+                val notificationManager = NotificationManagerCompat.from(context)
+                notificationManager.notify(NOTIFICATION_ID_WELCOME, builder.build())
+            }
+        } catch (e: Throwable) {
             // Android 13+ permission or notification block safety
         }
 
