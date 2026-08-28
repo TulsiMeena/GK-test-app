@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
@@ -121,18 +122,20 @@ fun SplashScreen(
             .testTag("splash_screen"),
         contentAlignment = Alignment.Center
     ) {
-        // Subtle ambient radial glow behind logo (compatible with all Android versions)
+        // Subtle ambient radial glow behind logo
         Box(
             modifier = Modifier
-                .size(280.dp)
+                .size(260.dp)
                 .scale(glowPulse)
-                .alpha(0.35f)
+                .alpha(0.25f)
+                .blur(50.dp)
                 .background(
                     Brush.radialGradient(
-                        0.0f to RoyalBlue500.copy(alpha = 0.5f),
-                        0.4f to ElectricCyan400.copy(alpha = 0.25f),
-                        0.8f to RoyalBlue600.copy(alpha = 0.05f),
-                        1.0f to Color.Transparent
+                        colors = listOf(
+                            RoyalBlue500,
+                            ElectricCyan400,
+                            Color.Transparent
+                        )
                     ),
                     shape = CircleShape
                 )

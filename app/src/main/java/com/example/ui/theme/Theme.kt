@@ -1,8 +1,6 @@
 package com.example.ui.theme
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -81,18 +79,6 @@ private val GyanixLightColorScheme = lightColorScheme(
     onErrorContainer = ErrorRedDark
 )
 
-/**
- * Safely traverses the context chain to find the hosting Activity without crashing.
- */
-private fun Context.findActivity(): Activity? {
-    var currentContext = this
-    while (currentContext is ContextWrapper) {
-        if (currentContext is Activity) return currentContext
-        currentContext = currentContext.baseContext
-    }
-    return null
-}
-
 @Composable
 fun GyanixTheme(
     darkTheme: Boolean = true, // Dark mode is the primary visual experience
@@ -103,16 +89,11 @@ fun GyanixTheme(
 
     if (!view.isInEditMode) {
         SideEffect {
-            try {
-                view.context.findActivity()?.let { activity ->
-                    val window = activity.window
-                    val insetsController = WindowCompat.getInsetsController(window, view)
-                    insetsController.isAppearanceLightStatusBars = !darkTheme
-                    insetsController.isAppearanceLightNavigationBars = !darkTheme
-                }
-            } catch (e: Throwable) {
-                // Safeguard against custom OEM Window controllers
-            }
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.surface.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
         }
     }
 
@@ -132,4 +113,3 @@ fun MyApplicationTheme(
 ) {
     GyanixTheme(darkTheme = darkTheme, content = content)
 }
-

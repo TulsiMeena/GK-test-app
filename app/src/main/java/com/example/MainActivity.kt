@@ -146,7 +146,17 @@ class MainActivity : ComponentActivity() {
             QuizQuestionDatabase.initialize(this)
             GyanixNotificationService.initializeChannel(this)
         } catch (e: Throwable) {
-            // Non-fatal, app continues safely
+            // Non-fatal, app continues
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            try {
+                if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+                }
+            } catch (e: Throwable) {
+                // Non-fatal
+            }
         }
 
         setContent {
@@ -155,26 +165,22 @@ class MainActivity : ComponentActivity() {
             val authState by authRepository.authState.collectAsState()
 
             LaunchedEffect(authState) {
-                try {
-                    when (val state = authState) {
-                        is AuthState.Authenticated -> {
-                            GyanixLocalDataManager.switchUser(state.user.id, context)
-                            GyanixNotificationService.switchUser(state.user.id, context)
-                            // Trigger welcome notification if user has no notifications yet
-                            GyanixNotificationService.triggerWelcomeNotification(
-                                context = context,
-                                userName = state.user.name,
-                                userEmail = state.user.email
-                            )
-                        }
-                        is AuthState.Unauthenticated -> {
-                            GyanixLocalDataManager.clearUserData()
-                            GyanixNotificationService.clearUserData()
-                        }
-                        else -> {}
+                when (val state = authState) {
+                    is AuthState.Authenticated -> {
+                        GyanixLocalDataManager.switchUser(state.user.id, context)
+                        GyanixNotificationService.switchUser(state.user.id, context)
+                        // Trigger welcome notification if user has no notifications yet
+                        GyanixNotificationService.triggerWelcomeNotification(
+                            context = context,
+                            userName = state.user.name,
+                            userEmail = state.user.email
+                        )
                     }
-                } catch (e: Throwable) {
-                    android.util.Log.e("MainActivity", "Auth state side effect caught safely: ${e.message}")
+                    is AuthState.Unauthenticated -> {
+                        GyanixLocalDataManager.clearUserData()
+                        GyanixNotificationService.clearUserData()
+                    }
+                    else -> {}
                 }
             }
 
