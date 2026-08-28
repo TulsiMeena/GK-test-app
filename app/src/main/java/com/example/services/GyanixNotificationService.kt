@@ -126,15 +126,8 @@ object GyanixNotificationService {
                 .setContentIntent(pendingIntent)
 
             val notificationManager = NotificationManagerCompat.from(context)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                androidx.core.content.ContextCompat.checkSelfPermission(
-                    context,
-                    android.Manifest.permission.POST_NOTIFICATIONS
-                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            ) {
-                notificationManager.notify(NOTIFICATION_ID_WELCOME, builder.build())
-            }
-        } catch (e: Throwable) {
+            notificationManager.notify(NOTIFICATION_ID_WELCOME, builder.build())
+        } catch (e: Exception) {
             // Android 13+ permission or notification block safety
         }
 
