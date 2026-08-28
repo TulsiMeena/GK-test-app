@@ -189,7 +189,7 @@ class MainActivity : ComponentActivity() {
             var selectedCategory by remember { mutableStateOf<GkCategory>(GyanixData.categories[0]) }
             var selectedTopic by remember { mutableStateOf<GkTopicItem?>(null) }
             var navigationStack by remember { mutableStateOf(listOf(GyanixScreen.SPLASH)) }
-            var bookmarkedQuestionIds by remember { mutableStateOf(setOf<String>()) }
+            val bookmarkedQuestionIds = GyanixLocalDataManager.bookmarkedQuestionIds.keys
 
             // Practice Session specific state
             var activePracticeQuestions by remember { mutableStateOf<List<GkQuestion>>(emptyList()) }
@@ -288,14 +288,10 @@ class MainActivity : ComponentActivity() {
                     activePracticeTitle = activePracticeTitle,
                     onStartPracticeSession = { qs, title -> startPracticeSession(qs, title) },
                     onToggleBookmark = { qId ->
-                        bookmarkedQuestionIds = if (bookmarkedQuestionIds.contains(qId)) {
-                            bookmarkedQuestionIds - qId
-                        } else {
-                            bookmarkedQuestionIds + qId
-                        }
+                        GyanixLocalDataManager.toggleBookmark(qId)
                     },
                     onBookmarkAll = { qIds ->
-                        bookmarkedQuestionIds = bookmarkedQuestionIds + qIds
+                        GyanixLocalDataManager.bookmarkAll(qIds)
                     },
                     onNavigateTo = { navigateTo(it) },
                     onNavigateBack = { navigateBack() },

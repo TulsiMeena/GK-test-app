@@ -2,6 +2,7 @@ package com.example.ui.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -21,6 +22,8 @@ import com.example.ui.theme.PurpleAccent
 import com.example.ui.theme.RoyalBlue400
 import com.example.ui.theme.SuccessGreen
 import com.example.ui.theme.WarningAmber
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -88,6 +91,7 @@ enum class WrongPracticeFilterMode(val label: String, val description: String) {
  * Centralized Gyanix Local Data Manager
  * Coordinates QuestionRepository, BookmarkRepository, WrongQuestionRepository,
  * PracticeRepository, TestHistoryRepository, and PerformanceRepository.
+ * Enforces strict account-level data isolation via per-user SharedPreferences.
  */
 object GyanixLocalDataManager {
 
@@ -118,15 +122,15 @@ object GyanixLocalDataManager {
     private var isInitialized = false
 
     fun initialize(context: Context) {
-        if (isInitialized) return
+        if (isInitialized && sharedPrefs != null) return
         sharedPrefs = context.getSharedPreferences("gyanix_user_$currentUserId", Context.MODE_PRIVATE)
         loadFromLocalStorage()
         isInitialized = true
     }
 
     /**
-     * Switch storage partition when a different Firebase user logs in.
-     * Ensures complete isolation between different accounts.
+     * Switch storage partition when a different user logs in or signs up.
+     * Ensures complete isolation so one account's data is never visible in another.
      */
     fun switchUser(userId: String, context: Context) {
         currentUserId = userId
@@ -162,19 +166,102 @@ object GyanixLocalDataManager {
 
     private fun loadFromLocalStorage() {
         val prefs = sharedPrefs ?: return
+        clearInMemoryData()
+
         dailyQuestionTarget = prefs.getInt("daily_target", 50)
         currentStreakDays = prefs.getInt("current_streak", 0)
         longestStreakDays = prefs.getInt("longest_streak", 0)
         lastActiveDateStr = prefs.getString("last_active_date", getTodayDateString()) ?: getTodayDateString()
 
-        // Load Bookmark IDs
+        // 1. Load Bookmark IDs
         val savedBookmarks = prefs.getStringSet("bookmarked_ids", emptySet()) ?: emptySet()
         savedBookmarks.forEach { id ->
             val timestamp = prefs.getLong("bm_time_$id", System.currentTimeMillis())
             bookmarkedQuestionIds[id] = timestamp
         }
 
-        // Check if day changed to reset daily questions count
+        // 2. Load Wrong Questions
+        val wrongJson = prefs.getString("wrong_questions_json", null)
+        if (!wrongJson.isNullOrBlank()) {
+            try {
+                val arr = JSONArray(wrongJson)
+                for (i in 0 until arr.length()) {
+                    val obj = arr.getJSONObject(i)
+                    val qId = obj.getString("questionId")
+                    val question = QuizQuestionDatabase.getQuestionById(qId)
+                    if (question != null) {
+                        wrongQuestionsMap[qId] = WrongQuestionRecord(
+                            questionId = qId,
+                            question = question,
+                            lastWrongTimestamp = obj.optLong("lastWrongTimestamp", System.currentTimeMillis()),
+                            wrongCount = obj.optInt("wrongCount", 1),
+                            userLastSelectedOption = obj.optInt("userLastSelectedOption", 0),
+                            correctOptionIndex = obj.optInt("correctOptionIndex", question.correctAnswerIndex)
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("GyanixLocalDataManager", "Error loading wrong questions: ${e.message}")
+            }
+        }
+
+        // 3. Load Test History
+        val historyJson = prefs.getString("test_history_json", null)
+        if (!historyJson.isNullOrBlank()) {
+            try {
+                val arr = JSONArray(historyJson)
+                for (i in 0 until arr.length()) {
+                    val obj = arr.getJSONObject(i)
+                    val catMap = mutableMapOf<String, Pair<Int, Int>>()
+                    val catMapObj = obj.optJSONObject("categoryScoreMap")
+                    if (catMapObj != null) {
+                        val keys = catMapObj.keys()
+                        while (keys.hasNext()) {
+                            val key = keys.next()
+                            val catArr = catMapObj.optJSONArray(key)
+                            if (catArr != null && catArr.length() >= 2) {
+                                catMap[key] = catArr.getInt(0) to catArr.getInt(1)
+                            }
+                        }
+                    }
+                    testHistoryList.add(
+                        TestAttemptRecord(
+                            id = obj.getString("id"),
+                            testTitle = obj.getString("testTitle"),
+                            questionCount = obj.getInt("questionCount"),
+                            score = obj.getDouble("score").toFloat(),
+                            maxScore = obj.getDouble("maxScore").toFloat(),
+                            accuracyPercentage = obj.getInt("accuracyPercentage"),
+                            timeTakenSeconds = obj.getInt("timeTakenSeconds"),
+                            timestamp = obj.optLong("timestamp", System.currentTimeMillis()),
+                            categoryScoreMap = catMap
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("GyanixLocalDataManager", "Error loading test history: ${e.message}")
+            }
+        }
+
+        // 4. Load Category Stats
+        val statsJson = prefs.getString("category_stats_json", null)
+        if (!statsJson.isNullOrBlank()) {
+            try {
+                val obj = JSONObject(statsJson)
+                val keys = obj.keys()
+                while (keys.hasNext()) {
+                    val k = keys.next()
+                    val arr = obj.optJSONArray(k)
+                    if (arr != null && arr.length() >= 2) {
+                        categoryStatsMap[k] = arr.getInt(0) to arr.getInt(1)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("GyanixLocalDataManager", "Error loading category stats: ${e.message}")
+            }
+        }
+
+        // 5. Check if day changed to reset daily questions count
         val todayStr = getTodayDateString()
         if (lastActiveDateStr == todayStr) {
             todayCompletedQuestionsCount = prefs.getInt("today_completed", 0)
@@ -280,11 +367,33 @@ object GyanixLocalDataManager {
             userLastSelectedOption = userOptionIndex,
             correctOptionIndex = question.correctAnswerIndex
         )
+        saveWrongQuestions()
     }
 
     fun removeFromWrongList(questionId: String) {
         val cleanId = questionId.substringBefore("_V")
         wrongQuestionsMap.remove(cleanId)
+        saveWrongQuestions()
+    }
+
+    private fun saveWrongQuestions() {
+        val prefs = sharedPrefs ?: return
+        try {
+            val arr = JSONArray()
+            wrongQuestionsMap.values.forEach { record ->
+                val obj = JSONObject().apply {
+                    put("questionId", record.questionId)
+                    put("lastWrongTimestamp", record.lastWrongTimestamp)
+                    put("wrongCount", record.wrongCount)
+                    put("userLastSelectedOption", record.userLastSelectedOption)
+                    put("correctOptionIndex", record.correctOptionIndex)
+                }
+                arr.put(obj)
+            }
+            prefs.edit().putString("wrong_questions_json", arr.toString()).apply()
+        } catch (e: Exception) {
+            Log.e("GyanixLocalDataManager", "Error saving wrong questions: ${e.message}")
+        }
     }
 
     fun getWrongQuestionsList(): List<WrongQuestionRecord> {
@@ -354,6 +463,7 @@ object GyanixLocalDataManager {
         // Check active day streak
         markActiveToday()
         saveDailyStats()
+        saveCategoryStats()
     }
 
     fun recordPracticeSessionSummary(completed: Int, correct: Int, incorrect: Int) {
@@ -362,6 +472,7 @@ object GyanixLocalDataManager {
         todayIncorrectQuestionsCount += incorrect
         markActiveToday()
         saveDailyStats()
+        saveCategoryStats()
     }
 
     val todayAccuracyPercentage: Int
@@ -415,6 +526,22 @@ object GyanixLocalDataManager {
             .apply()
     }
 
+    private fun saveCategoryStats() {
+        val prefs = sharedPrefs ?: return
+        try {
+            val obj = JSONObject()
+            categoryStatsMap.forEach { (catId, pair) ->
+                val arr = JSONArray()
+                arr.put(pair.first)
+                arr.put(pair.second)
+                obj.put(catId, arr)
+            }
+            prefs.edit().putString("category_stats_json", obj.toString()).apply()
+        } catch (e: Exception) {
+            Log.e("GyanixLocalDataManager", "Error saving category stats: ${e.message}")
+        }
+    }
+
     private fun getTodayDateString(): String {
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
     }
@@ -435,6 +562,7 @@ object GyanixLocalDataManager {
             categoryScoreMap = result.categoryScoreBreakdown
         )
         testHistoryList.add(0, record)
+        saveTestHistory()
 
         // Also record all wrong questions to wrong questions repository
         result.questionStates.forEach { state ->
@@ -456,6 +584,43 @@ object GyanixLocalDataManager {
             correct = result.correctCount,
             incorrect = result.incorrectCount
         )
+        saveCategoryStats()
+    }
+
+    private fun saveTestHistory() {
+        val prefs = sharedPrefs ?: return
+        try {
+            val arr = JSONArray()
+            testHistoryList.forEach { record ->
+                val obj = JSONObject().apply {
+                    put("id", record.id)
+                    put("testTitle", record.testTitle)
+                    put("questionCount", record.questionCount)
+                    put("score", record.score.toDouble())
+                    put("maxScore", record.maxScore.toDouble())
+                    put("accuracyPercentage", record.accuracyPercentage)
+                    put("timeTakenSeconds", record.timeTakenSeconds)
+                    put("timestamp", record.timestamp)
+                    val catMapObj = JSONObject()
+                    record.categoryScoreMap.forEach { (k, v) ->
+                        val catArr = JSONArray()
+                        catArr.put(v.first)
+                        catArr.put(v.second)
+                        catMapObj.put(k, catArr)
+                    }
+                    put("categoryScoreMap", catMapObj)
+                }
+                arr.put(obj)
+            }
+            prefs.edit().putString("test_history_json", arr.toString()).apply()
+        } catch (e: Exception) {
+            Log.e("GyanixLocalDataManager", "Error saving test history: ${e.message}")
+        }
+    }
+
+    fun clearTestHistory() {
+        testHistoryList.clear()
+        sharedPrefs?.edit()?.remove("test_history_json")?.apply()
     }
 
     fun getBestScoreForTest(testTitle: String): Float? {
@@ -591,3 +756,4 @@ object GyanixLocalDataManager {
         return recommendations
     }
 }
+

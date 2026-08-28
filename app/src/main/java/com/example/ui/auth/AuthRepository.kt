@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.example.services.FirebaseAuthService
 import com.example.services.FirestoreUserService
+import com.example.services.GyanixNotificationService
+import com.example.ui.data.GyanixLocalDataManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +14,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.security.MessageDigest
 import java.util.UUID
+
+/**
+ * Registered Account Record for strict credential validation & isolation
+ */
+data class RegisteredAccount(
+    val uid: String,
+    val email: String,
+    val passwordHash: String,
+    val displayName: String,
+    val createdAt: Long = System.currentTimeMillis()
+)
 
 /**
  * Authentication Repository Interface
@@ -32,7 +47,7 @@ interface AuthRepository {
 
 /**
  * Production Hybrid Firebase & Local Authentication Repository implementation.
- * Connects Firebase Auth & Firestore with resilient local caching and offline fallback.
+ * Enforces strict account registration, password validation, and partition isolation.
  */
 class FirebaseAuthRepository(
     private val context: Context,
@@ -44,6 +59,9 @@ class FirebaseAuthRepository(
     private val prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+    private val accountsPrefs: SharedPreferences =
+        context.getSharedPreferences(ACCOUNTS_REGISTRY_PREFS, Context.MODE_PRIVATE)
+
     private val _authState = MutableStateFlow<AuthState>(AuthState.Initializing)
     override val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
@@ -52,8 +70,12 @@ class FirebaseAuthRepository(
         val savedUser = getSavedLocalUser()
         if (savedUser != null) {
             _authState.value = AuthState.Authenticated(savedUser)
+            GyanixLocalDataManager.switchUser(savedUser.uid, context)
+            GyanixNotificationService.switchUser(savedUser.uid, context)
         } else {
             _authState.value = AuthState.Unauthenticated
+            GyanixLocalDataManager.clearUserData()
+            GyanixNotificationService.clearUserData()
         }
 
         // Also observe Firebase Auth state continuously when online
@@ -76,9 +98,13 @@ class FirebaseAuthRepository(
                             )
 
                         saveLocalUser(profile)
+                        GyanixLocalDataManager.switchUser(profile.uid, context)
+                        GyanixNotificationService.switchUser(profile.uid, context)
                         _authState.value = AuthState.Authenticated(profile)
                     } else if (getSavedLocalUser() == null) {
                         _authState.value = AuthState.Unauthenticated
+                        GyanixLocalDataManager.clearUserData()
+                        GyanixNotificationService.clearUserData()
                     }
                 }
             } catch (e: Throwable) {
@@ -92,6 +118,44 @@ class FirebaseAuthRepository(
 
     override fun setOnboardingCompleted(completed: Boolean) {
         prefs.edit().putBoolean(KEY_ONBOARDING_COMPLETED, completed).apply()
+    }
+
+    private fun hashPassword(password: String): String {
+        val salted = "gyanix_secure_salt_v2_" + password.trim()
+        val digest = MessageDigest.getInstance("SHA-256")
+        val hashBytes = digest.digest(salted.toByteArray(Charsets.UTF_8))
+        return hashBytes.joinToString("") { "%02x".format(it) }
+    }
+
+    private fun getRegisteredAccount(email: String): RegisteredAccount? {
+        val jsonStr = accountsPrefs.getString(email.trim().lowercase(), null) ?: return null
+        return try {
+            val obj = JSONObject(jsonStr)
+            RegisteredAccount(
+                uid = obj.getString("uid"),
+                email = obj.getString("email"),
+                passwordHash = obj.getString("passwordHash"),
+                displayName = obj.getString("displayName"),
+                createdAt = obj.optLong("createdAt", System.currentTimeMillis())
+            )
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun saveRegisteredAccount(account: RegisteredAccount) {
+        try {
+            val obj = JSONObject().apply {
+                put("uid", account.uid)
+                put("email", account.email.lowercase())
+                put("passwordHash", account.passwordHash)
+                put("displayName", account.displayName)
+                put("createdAt", account.createdAt)
+            }
+            accountsPrefs.edit().putString(account.email.lowercase(), obj.toString()).apply()
+        } catch (e: Exception) {
+            Log.e("FirebaseAuthRepository", "Error saving registered account: ${e.message}")
+        }
     }
 
     private fun saveLocalUser(user: GyanixUser) {
@@ -123,7 +187,7 @@ class FirebaseAuthRepository(
         password: String
     ): AuthResult<GyanixUser> = withContext(Dispatchers.IO) {
         val trimmedName = fullName.trim()
-        val trimmedEmail = email.trim()
+        val trimmedEmail = email.trim().lowercase()
 
         if (trimmedName.isBlank()) {
             return@withContext AuthResult.Error("Please enter your full name (कृपया अपना पूरा नाम दर्ज करें).")
@@ -135,68 +199,75 @@ class FirebaseAuthRepository(
             return@withContext AuthResult.Error("Please enter a valid email address (कृपया मान्य ईमेल दर्ज करें).")
         }
         if (password.length < 6) {
-            return@withContext AuthResult.Error("Password must be at least 6 characters long.")
+            return@withContext AuthResult.Error("Password must be at least 6 characters long (पासवर्ड कम से कम 6 अक्षरों का होना चाहिए).")
+        }
+
+        // Check if account already exists in local registry
+        val existingAccount = getRegisteredAccount(trimmedEmail)
+        if (existingAccount != null) {
+            return@withContext AuthResult.Error("An account with this email already exists (इस ईमेल से पहले से खाता मौजूद है). Please login instead.")
         }
 
         try {
-            var authenticatedUser: GyanixUser? = null
+            var firebaseUid: String? = null
 
             // 1. Try Firebase Authentication if online/available
             if (authService.isAvailable) {
                 try {
                     val firebaseUser = authService.createUser(trimmedEmail, password)
                     authService.updateDisplayName(trimmedName)
-                    authenticatedUser = firestoreService.createUserProfileIfNotExists(
+                    firebaseUid = firebaseUser.uid
+                    firestoreService.createUserProfileIfNotExists(
                         uid = firebaseUser.uid,
                         displayName = trimmedName,
                         email = trimmedEmail
                     )
                 } catch (firebaseErr: Exception) {
-                    Log.w("AuthRepository", "Firebase auth failed or offline, falling back to local: ${firebaseErr.message}")
+                    val err = firebaseErr.message ?: ""
+                    if (err.contains("already in use", ignoreCase = true) || err.contains("already exists", ignoreCase = true)) {
+                        return@withContext AuthResult.Error("An account with this email already exists (इस ईमेल से पहले से खाता मौजूद है). Please login instead.")
+                    }
+                    Log.w("AuthRepository", "Firebase auth failed or offline, creating local profile: ${firebaseErr.message}")
                 }
             }
 
-            // 2. Resilient Fallback to Local Profile Creation
-            if (authenticatedUser == null) {
-                val localUid = "user_" + UUID.nameUUIDFromBytes(trimmedEmail.lowercase().toByteArray()).toString().take(16)
-                authenticatedUser = GyanixUser(
-                    uid = localUid,
-                    displayName = trimmedName,
-                    email = trimmedEmail,
-                    createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis()
-                )
-            }
-
-            // 3. Save session & mark onboarding completed
-            saveLocalUser(authenticatedUser)
-            setOnboardingCompleted(true)
-
-            // 4. Trigger Welcome Notification & Initialize user space
-            com.example.services.GyanixNotificationService.switchUser(authenticatedUser.uid, context)
-            com.example.services.GyanixNotificationService.triggerWelcomeNotification(
-                context = context,
-                userName = authenticatedUser.displayName,
-                userEmail = authenticatedUser.email
-            )
-
-            _authState.value = AuthState.Authenticated(authenticatedUser)
-            AuthResult.Success(authenticatedUser)
-        } catch (e: Exception) {
-            // As a final fail-safe, ensure user is never blocked
-            val fallbackUid = "user_" + UUID.randomUUID().toString().take(12)
-            val fallbackUser = GyanixUser(
-                uid = fallbackUid,
+            val uid = firebaseUid ?: ("user_" + UUID.nameUUIDFromBytes(trimmedEmail.toByteArray()).toString().take(16))
+            val user = GyanixUser(
+                uid = uid,
                 displayName = trimmedName,
                 email = trimmedEmail,
                 createdAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis()
             )
-            saveLocalUser(fallbackUser)
+
+            // Save to registry for strict password verification on login
+            saveRegisteredAccount(
+                RegisteredAccount(
+                    uid = uid,
+                    email = trimmedEmail,
+                    passwordHash = hashPassword(password),
+                    displayName = trimmedName,
+                    createdAt = user.createdAt
+                )
+            )
+
+            // Save active session & mark onboarding completed
+            saveLocalUser(user)
             setOnboardingCompleted(true)
-            com.example.services.GyanixNotificationService.switchUser(fallbackUid, context)
-            _authState.value = AuthState.Authenticated(fallbackUser)
-            AuthResult.Success(fallbackUser)
+
+            // Switch to isolated user space
+            GyanixLocalDataManager.switchUser(user.uid, context)
+            GyanixNotificationService.switchUser(user.uid, context)
+            GyanixNotificationService.triggerWelcomeNotification(
+                context = context,
+                userName = user.displayName,
+                userEmail = user.email
+            )
+
+            _authState.value = AuthState.Authenticated(user)
+            AuthResult.Success(user)
+        } catch (e: Exception) {
+            AuthResult.Error(e.message ?: "Account creation failed. Please try again.")
         }
     }
 
@@ -204,21 +275,21 @@ class FirebaseAuthRepository(
         email: String,
         password: String
     ): AuthResult<GyanixUser> = withContext(Dispatchers.IO) {
-        val trimmedEmail = email.trim()
+        val trimmedEmail = email.trim().lowercase()
         if (trimmedEmail.isBlank()) {
-            return@withContext AuthResult.Error("Email address is required.")
+            return@withContext AuthResult.Error("Email address is required (ईमेल दर्ज करें).")
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(trimmedEmail).matches()) {
-            return@withContext AuthResult.Error("Please enter a valid email address.")
+            return@withContext AuthResult.Error("Please enter a valid email address (मान्य ईमेल दर्ज करें).")
         }
         if (password.isBlank()) {
-            return@withContext AuthResult.Error("Password is required.")
+            return@withContext AuthResult.Error("Password is required (पासवर्ड दर्ज करें).")
         }
 
         try {
             var authenticatedUser: GyanixUser? = null
 
-            // 1. Try Firebase Authentication
+            // 1. Try Firebase Authentication first if available
             if (authService.isAvailable) {
                 try {
                     val firebaseUser = authService.signIn(trimmedEmail, password)
@@ -229,32 +300,57 @@ class FirebaseAuthRepository(
                             displayName = defaultName,
                             email = trimmedEmail
                         )
+
+                    // Update local registry cache
+                    saveRegisteredAccount(
+                        RegisteredAccount(
+                            uid = authenticatedUser.uid,
+                            email = trimmedEmail,
+                            passwordHash = hashPassword(password),
+                            displayName = authenticatedUser.displayName,
+                            createdAt = authenticatedUser.createdAt
+                        )
+                    )
                 } catch (firebaseErr: Exception) {
-                    Log.w("AuthRepository", "Firebase signIn fallback: ${firebaseErr.message}")
+                    val msg = firebaseErr.message ?: ""
+                    Log.w("AuthRepository", "Firebase signIn error: $msg")
+                    if (msg.contains("password", ignoreCase = true) || msg.contains("wrong-password", ignoreCase = true) || msg.contains("INVALID_LOGIN_CREDENTIALS", ignoreCase = true)) {
+                        // Check local password before failing
+                        val localAcc = getRegisteredAccount(trimmedEmail)
+                        if (localAcc != null && localAcc.passwordHash != hashPassword(password)) {
+                            return@withContext AuthResult.Error("Incorrect password (गलत पासवर्ड). Please check your password and try again.")
+                        }
+                    }
                 }
             }
 
-            // 2. Fallback to Local Profile
+            // 2. Validate against local registry if Firebase didn't authenticate
             if (authenticatedUser == null) {
-                val savedUser = getSavedLocalUser()
-                if (savedUser != null && savedUser.email.equals(trimmedEmail, ignoreCase = true)) {
-                    authenticatedUser = savedUser
-                } else {
-                    val defaultName = trimmedEmail.substringBefore("@").replaceFirstChar { it.uppercase() }
-                    val localUid = "user_" + UUID.nameUUIDFromBytes(trimmedEmail.lowercase().toByteArray()).toString().take(16)
-                    authenticatedUser = GyanixUser(
-                        uid = localUid,
-                        displayName = defaultName,
-                        email = trimmedEmail,
-                        createdAt = System.currentTimeMillis(),
-                        updatedAt = System.currentTimeMillis()
-                    )
+                val registeredAccount = getRegisteredAccount(trimmedEmail)
+                if (registeredAccount == null) {
+                    return@withContext AuthResult.Error("No account found with this email ($trimmedEmail). Please create an account first (इस ईमेल से कोई खाता नहीं मिला। कृपया पहले साइन अप करें).")
                 }
+
+                // Strictly verify password!
+                if (registeredAccount.passwordHash != hashPassword(password)) {
+                    return@withContext AuthResult.Error("Incorrect password (गलत पासवर्ड). Please enter the correct password used during account creation.")
+                }
+
+                authenticatedUser = GyanixUser(
+                    uid = registeredAccount.uid,
+                    displayName = registeredAccount.displayName,
+                    email = registeredAccount.email,
+                    createdAt = registeredAccount.createdAt,
+                    updatedAt = System.currentTimeMillis()
+                )
             }
 
             saveLocalUser(authenticatedUser)
             setOnboardingCompleted(true)
-            com.example.services.GyanixNotificationService.switchUser(authenticatedUser.uid, context)
+
+            // Switch to isolated user space
+            GyanixLocalDataManager.switchUser(authenticatedUser.uid, context)
+            GyanixNotificationService.switchUser(authenticatedUser.uid, context)
 
             _authState.value = AuthState.Authenticated(authenticatedUser)
             AuthResult.Success(authenticatedUser)
@@ -273,7 +369,11 @@ class FirebaseAuthRepository(
         )
         saveLocalUser(guestUser)
         setOnboardingCompleted(true)
-        com.example.services.GyanixNotificationService.switchUser("guest_user", context)
+
+        // Switch to isolated guest partition
+        GyanixLocalDataManager.switchUser("guest_user", context)
+        GyanixNotificationService.switchUser("guest_user", context)
+
         _authState.value = AuthState.Authenticated(guestUser)
         AuthResult.Success(guestUser)
     }
@@ -290,17 +390,21 @@ class FirebaseAuthRepository(
             .remove(KEY_USER_EMAIL)
             .remove(KEY_USER_CREATED_AT)
             .apply()
-        com.example.services.GyanixNotificationService.clearUserData()
+
+        // Clear all user partition caches
+        GyanixLocalDataManager.clearUserData()
+        GyanixNotificationService.clearUserData()
+
         _authState.value = AuthState.Unauthenticated
     }
 
     override suspend fun sendPasswordReset(email: String): AuthResult<String> = withContext(Dispatchers.IO) {
-        val trimmedEmail = email.trim()
+        val trimmedEmail = email.trim().lowercase()
         if (trimmedEmail.isBlank()) {
-            return@withContext AuthResult.Error("Please enter your email address.")
+            return@withContext AuthResult.Error("Please enter your email address (ईमेल दर्ज करें).")
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(trimmedEmail).matches()) {
-            return@withContext AuthResult.Error("Please enter a valid email address.")
+            return@withContext AuthResult.Error("Please enter a valid email address (मान्य ईमेल दर्ज करें).")
         }
 
         try {
@@ -325,11 +429,14 @@ class FirebaseAuthRepository(
         } catch (e: Throwable) {
             // Ignore
         }
+        GyanixLocalDataManager.clearUserData()
+        GyanixNotificationService.clearUserData()
         _authState.value = AuthState.Unauthenticated
     }
 
     companion object {
         private const val PREFS_NAME = "gyanix_firebase_auth_prefs"
+        private const val ACCOUNTS_REGISTRY_PREFS = "gyanix_registered_accounts_registry"
         private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
         private const val KEY_USER_UID = "saved_user_uid"
         private const val KEY_USER_NAME = "saved_user_name"
@@ -351,4 +458,5 @@ class FirebaseAuthRepository(
  * Backward compatibility alias so existing references to LocalAuthRepository resolve seamlessly
  */
 typealias LocalAuthRepository = FirebaseAuthRepository
+
 

@@ -202,7 +202,7 @@ fun ProfileProgressScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        GyanixLocalDataManager.testHistoryList.clear()
+                        GyanixLocalDataManager.clearTestHistory()
                         showResetDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = ErrorRed)
