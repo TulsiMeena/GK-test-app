@@ -325,8 +325,7 @@ object QuizQuestionDatabase {
     }
 
     init {
-        // Pre-populate with built-in high yield question banks immediately
-        populateQuestions(builtInQuestions)
+        // Will populate on first access or initialize(context) in background
     }
 
     /**

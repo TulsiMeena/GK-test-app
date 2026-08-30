@@ -38,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
@@ -127,13 +126,12 @@ fun SplashScreen(
             modifier = Modifier
                 .size(260.dp)
                 .scale(glowPulse)
-                .alpha(0.25f)
-                .blur(50.dp)
+                .alpha(0.35f)
                 .background(
                     Brush.radialGradient(
                         colors = listOf(
-                            RoyalBlue500,
-                            ElectricCyan400,
+                            RoyalBlue500.copy(alpha = 0.6f),
+                            ElectricCyan400.copy(alpha = 0.3f),
                             Color.Transparent
                         )
                     ),
