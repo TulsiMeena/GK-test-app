@@ -2,7 +2,8 @@ package com.example
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
-import com.example.ui.theme.MyApplicationTheme
+import com.example.ui.screens.HomeScreen
+import com.example.ui.theme.GyanixTheme
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
@@ -22,18 +23,26 @@ class GreetingScreenshotTest {
   @Test
   fun greeting_screenshot() {
     composeTestRule.setContent {
-      GyanixAppContainer(
-        isDarkTheme = true,
-        onToggleTheme = {},
-        currentScreen = GyanixScreen.HOME,
-        selectedCategory = com.example.ui.model.GyanixData.categories[0],
-        onNavigateTo = {},
-        onNavigateBack = {},
-        onSelectCategory = {},
-        onStartCategoryPractice = {}
-      )
+      GyanixTheme(darkTheme = true) {
+        HomeScreen(
+          isDarkTheme = true,
+          onToggleTheme = {},
+          onNavigateToQuiz = {},
+          onNavigateToCategory = {},
+          onNavigateToCategoriesList = {},
+          onNavigateToPracticeSelection = {},
+          onNavigateToTests = {},
+          onNavigateToSearch = {},
+          onNavigateToProfile = {},
+          onNavigateToNotifications = {},
+          onNavigateToWrongQuestions = {},
+          onNavigateToBookmarks = {},
+          onOpenDesignSystem = {}
+        )
+      }
     }
 
     composeTestRule.onRoot().captureRoboImage(filePath = "src/test/screenshots/greeting.png")
   }
 }
+
