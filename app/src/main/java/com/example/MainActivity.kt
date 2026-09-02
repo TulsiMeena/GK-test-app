@@ -211,24 +211,9 @@ class MainActivity : ComponentActivity() {
             var lastSessionResult by remember { mutableStateOf<QuizSessionResult?>(null) }
             val quizEngineState = rememberQuizEngineState()
 
-            fun setScreen(screen: GyanixScreen, newStack: List<GyanixScreen> = listOf(screen)) {
-                navigationStack = newStack
-                currentScreen = screen
-            }
-
             fun navigateTo(screen: GyanixScreen) {
                 if (screen != currentScreen) {
-                    val rootTabs = listOf(GyanixScreen.HOME, GyanixScreen.CATEGORIES, GyanixScreen.PRACTICE, GyanixScreen.TESTS, GyanixScreen.PROGRESS, GyanixScreen.PROFILE)
-                    navigationStack = if (screen in rootTabs && currentScreen in rootTabs) {
-                        // When switching between top-level bottom nav tabs, keep HOME as the base root
-                        if (screen == GyanixScreen.HOME) {
-                            listOf(GyanixScreen.HOME)
-                        } else {
-                            listOf(GyanixScreen.HOME, screen)
-                        }
-                    } else {
-                        navigationStack + screen
-                    }
+                    navigationStack = navigationStack + screen
                     currentScreen = screen
                 }
             }
@@ -239,12 +224,11 @@ class MainActivity : ComponentActivity() {
                     navigationStack = newStack
                     currentScreen = newStack.last()
                 } else {
-                    val fallbackScreen = when {
+                    currentScreen = when {
                         !authRepository.isOnboardingCompleted -> GyanixScreen.ONBOARDING
                         authState !is AuthState.Authenticated -> GyanixScreen.AUTH_WELCOME
                         else -> GyanixScreen.HOME
                     }
-                    setScreen(fallbackScreen, listOf(fallbackScreen))
                 }
             }
 
@@ -266,58 +250,24 @@ class MainActivity : ComponentActivity() {
             var lastBackPressTime by remember { androidx.compose.runtime.mutableLongStateOf(0L) }
             val coroutineScope = rememberCoroutineScope()
 
-            // Robust Android Hardware / Gesture Back Handling with Accidental Exit Protection
+            // Android Hardware / Gesture Back Handling with Exit Protection
             BackHandler(enabled = true) {
-                if (currentScreen == GyanixScreen.SPLASH) {
-                    // Prevent accidental back exit during splash screen
-                    return@BackHandler
-                }
-
-                if (navigationStack.size > 1) {
+                if (!isRootOrFullScreen) {
                     navigateBack()
-                } else {
-                    // When on a root screen in stack of size 1
-                    when (currentScreen) {
-                        GyanixScreen.LOGIN,
-                        GyanixScreen.SIGNUP,
-                        GyanixScreen.FORGOT_PASSWORD -> {
-                            // Safely navigate back to Auth Welcome screen
-                            setScreen(GyanixScreen.AUTH_WELCOME, listOf(GyanixScreen.AUTH_WELCOME))
-                        }
-                        GyanixScreen.CATEGORIES,
-                        GyanixScreen.PRACTICE,
-                        GyanixScreen.TESTS,
-                        GyanixScreen.PROGRESS,
-                        GyanixScreen.PROFILE,
-                        GyanixScreen.NOTIFICATIONS,
-                        GyanixScreen.SEARCH -> {
-                            // Secondary main screens always safely return to HOME
-                            setScreen(GyanixScreen.HOME, listOf(GyanixScreen.HOME))
-                        }
-                        GyanixScreen.HOME,
-                        GyanixScreen.AUTH_WELCOME,
-                        GyanixScreen.ONBOARDING -> {
-                            val currentTime = System.currentTimeMillis()
-                            if (currentTime - lastBackPressTime < 2000) {
-                                (context as? android.app.Activity)?.finish()
-                            } else {
-                                lastBackPressTime = currentTime
-                                android.widget.Toast.makeText(
-                                    context,
-                                    "Press back again to exit (ऐप बंद करने के लिए दोबारा दबाएं)",
-                                    android.widget.Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                        else -> {
-                            // Any other subscreen with empty stack defaults safely to Home or Auth Welcome
-                            if (authState is AuthState.Authenticated) {
-                                setScreen(GyanixScreen.HOME, listOf(GyanixScreen.HOME))
-                            } else {
-                                setScreen(GyanixScreen.AUTH_WELCOME, listOf(GyanixScreen.AUTH_WELCOME))
-                            }
-                        }
+                } else if (currentScreen == GyanixScreen.HOME) {
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastBackPressTime < 2000) {
+                        (context as? android.app.Activity)?.finish()
+                    } else {
+                        lastBackPressTime = currentTime
+                        android.widget.Toast.makeText(
+                            context,
+                            "Press back again to exit (ऐप बंद करने के लिए दोबारा दबाएं)",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
                     }
+                } else if (navigationStack.size > 1) {
+                    navigateBack()
                 }
             }
 
@@ -572,6 +522,12 @@ fun GyanixAppContainer(
                         },
                         onNavigateToSignup = {
                             onNavigateTo(GyanixScreen.SIGNUP)
+                        },
+                        onContinueAsGuest = {
+                            coroutineScope.launch {
+                                authRepository.continueAsGuest()
+                                onSetScreen(GyanixScreen.HOME, listOf(GyanixScreen.HOME))
+                            }
                         }
                     )
 
