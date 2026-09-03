@@ -189,7 +189,7 @@ class MainActivity : ComponentActivity() {
             var selectedCategory by remember { mutableStateOf<GkCategory>(GyanixData.categories[0]) }
             var selectedTopic by remember { mutableStateOf<GkTopicItem?>(null) }
             var navigationStack by remember { mutableStateOf(listOf(GyanixScreen.SPLASH)) }
-            val bookmarkedQuestionIds = GyanixLocalDataManager.bookmarkedQuestionIds.keys
+            var bookmarkedQuestionIds by remember { mutableStateOf(setOf<String>()) }
 
             // Practice Session specific state
             var activePracticeQuestions by remember { mutableStateOf<List<GkQuestion>>(emptyList()) }
@@ -288,10 +288,14 @@ class MainActivity : ComponentActivity() {
                     activePracticeTitle = activePracticeTitle,
                     onStartPracticeSession = { qs, title -> startPracticeSession(qs, title) },
                     onToggleBookmark = { qId ->
-                        GyanixLocalDataManager.toggleBookmark(qId)
+                        bookmarkedQuestionIds = if (bookmarkedQuestionIds.contains(qId)) {
+                            bookmarkedQuestionIds - qId
+                        } else {
+                            bookmarkedQuestionIds + qId
+                        }
                     },
                     onBookmarkAll = { qIds ->
-                        GyanixLocalDataManager.bookmarkAll(qIds)
+                        bookmarkedQuestionIds = bookmarkedQuestionIds + qIds
                     },
                     onNavigateTo = { navigateTo(it) },
                     onNavigateBack = { navigateBack() },
@@ -363,11 +367,7 @@ class MainActivity : ComponentActivity() {
                     },
                     onFinishQuiz = { result ->
                         lastSessionResult = result
-                        try {
-                            com.example.ui.data.GyanixLocalDataManager.recordQuizResult(result)
-                        } catch (e: Throwable) {
-                            android.util.Log.e("MainActivity", "Error recording quiz result: ${e.message}", e)
-                        }
+                        com.example.ui.data.GyanixLocalDataManager.recordQuizResult(result)
                         navigateTo(GyanixScreen.RESULT_OVERVIEW)
                     }
                 )

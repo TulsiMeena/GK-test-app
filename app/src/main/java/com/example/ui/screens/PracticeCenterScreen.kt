@@ -279,11 +279,11 @@ fun PracticeCenterScreen(
                         onClick = {
                             val weakIds = GyanixLocalDataManager.getWeakCategoryIds()
                             val questions = if (weakIds.isNotEmpty()) {
-                                QuizQuestionDatabase.getQuestionsByFilter(categoryId = weakIds.firstOrNull(), count = 15)
+                                QuizQuestionDatabase.getQuestionsByFilter(categoryId = weakIds.first(), count = 15)
                             } else {
                                 QuizQuestionDatabase.getQuestionsByFilter(difficulty = "Moderate", count = 15)
                             }
-                            onStartPracticeSession(questions.ifEmpty { QuizQuestionDatabase.getSampleQuestions(15) }, "Weak Areas Revision")
+                            onStartPracticeSession(questions, "Weak Areas Revision")
                         },
                         modifier = Modifier.weight(1f),
                         testTag = "btn_mode_weak_practice"

@@ -108,14 +108,10 @@ fun LiveQuizScreen(
         quizEngineState.showExitWarning = true
     }
 
-    // Submission listener: safely handles auto-submission and prevents duplicate callbacks
-    var hasHandledSubmission by remember { mutableStateOf(false) }
-
+    // Auto-submission listener
     LaunchedEffect(quizEngineState.isQuizSubmitted, quizEngineState.sessionResult) {
-        val result = quizEngineState.sessionResult
-        if (quizEngineState.isQuizSubmitted && result != null && !hasHandledSubmission) {
-            hasHandledSubmission = true
-            onQuizSubmitted(result)
+        if (quizEngineState.isQuizSubmitted && quizEngineState.sessionResult != null) {
+            onQuizSubmitted(quizEngineState.sessionResult!!)
         }
     }
 
@@ -341,12 +337,8 @@ fun LiveQuizScreen(
                 answeredAndMarkedCount = quizEngineState.answeredAndMarkedCount,
                 timeRemaining = quizEngineState.formattedRemainingTime,
                 onConfirmSubmit = {
-                    quizEngineState.showSubmitConfirmation = false
                     val result = quizEngineState.submitQuiz()
-                    if (!hasHandledSubmission) {
-                        hasHandledSubmission = true
-                        onQuizSubmitted(result)
-                    }
+                    onQuizSubmitted(result)
                 },
                 onDismiss = { quizEngineState.showSubmitConfirmation = false }
             )

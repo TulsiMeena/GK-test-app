@@ -137,7 +137,7 @@ fun PracticeSessionScreen(
     }
 
     val totalQuestions = questions.size
-    val currentQuestion = questions.getOrNull(currentIndex) ?: questions.firstOrNull() ?: return
+    val currentQuestion = questions.getOrElse(currentIndex) { questions.first() }
     val selectedOption = userAnswers[currentQuestion.id]
     val isCurrentAnswered = selectedOption != null
 
@@ -151,7 +151,7 @@ fun PracticeSessionScreen(
         q != null && selected != q.correctAnswerIndex
     }
     val remainingCount = (totalQuestions - userAnswers.size).coerceAtLeast(0)
-    val progressFraction = if (totalQuestions > 0) ((currentIndex + 1).toFloat() / totalQuestions.toFloat()).coerceIn(0f, 1f) else 0f
+    val progressFraction = (currentIndex + 1).toFloat() / totalQuestions.toFloat()
 
     val isBookmarked = GyanixLocalDataManager.isBookmarked(currentQuestion.id)
 
