@@ -221,112 +221,118 @@ object QuizQuestionDatabase {
      * - General Science (7 topics x 10 mock tests x 15 questions = 1050 questions)
      * - World GK (7 topics x 10 mock tests x 15 questions = 1050 questions)
      */
-    private val builtInQuestions: List<GkQuestion> by lazy {
-        HistoryTopic1Data.questions + HistoryTopic1ExtData.questions +
-        HistoryTopic2Data.questions + HistoryTopic2ExtData.questions +
-        HistoryTopic3Data.questions + HistoryTopic3ExtData.questions +
-        HistoryTopic4Data.questions + HistoryTopic4ExtData.questions +
-        HistoryTopic5Data.questions + HistoryTopic5ExtData.questions +
-        HistoryTopic6Data.questions + HistoryTopic6ExtData.questions +
-        HistoryTopic7Data.questions + HistoryTopic7ExtData.questions +
-        HistoryTopic8Data.questions + HistoryTopic8ExtData.questions +
-        HistoryTopic9Data.questions + HistoryTopic9ExtData.questions +
-        HistoryTopic10Data.questions + HistoryTopic10ExtData.questions +
-        PolityTopic1Data.questions + PolityTopic1ExtData.questions +
-        PolityTopic2Data.questions + PolityTopic2ExtData.questions +
-        PolityTopic3Data.questions + PolityTopic3ExtData.questions +
-        PolityTopic4Data.questions + PolityTopic4ExtData.questions +
-        PolityTopic5Data.questions + PolityTopic5ExtData.questions +
-        PolityTopic6Data.questions + PolityTopic6ExtData.questions +
-        PolityTopic7Data.questions + PolityTopic7ExtData.questions +
-        PolityTopic8Data.questions + PolityTopic8ExtData.questions +
-        PolityTopic9Data.questions + PolityTopic9ExtData.questions +
-        PolityTopic10Data.questions + PolityTopic10ExtData.questions +
-        GeographyTopic1Data.questions + GeographyTopic1ExtData.questions +
-        GeographyTopic2Data.questions + GeographyTopic2ExtData.questions +
-        GeographyTopic3Data.questions + GeographyTopic3ExtData.questions +
-        GeographyTopic4Data.questions + GeographyTopic4ExtData.questions +
-        GeographyTopic5Data.questions + GeographyTopic5ExtData.questions +
-        GeographyTopic6Data.questions + GeographyTopic6ExtData.questions +
-        GeographyTopic7Data.questions + GeographyTopic7ExtData.questions +
-        GeographyTopic8Data.questions + GeographyTopic8ExtData.questions +
-        GeographyTopic9Data.questions + GeographyTopic9ExtData.questions +
-        GeographyTopic10Data.questions + GeographyTopic10ExtData.questions +
-        EconomyTopic1Data.questions + EconomyTopic1ExtData.questions +
-        EconomyTopic2Data.questions + EconomyTopic2ExtData.questions +
-        EconomyTopic3Data.questions + EconomyTopic3ExtData.questions +
-        EconomyTopic4Data.questions + EconomyTopic4ExtData.questions +
-        EconomyTopic5Data.questions + EconomyTopic5ExtData.questions +
-        EconomyTopic6Data.questions + EconomyTopic6ExtData.questions +
-        EconomyTopic7Data.questions + EconomyTopic7ExtData.questions +
-        EconomyTopic8Data.questions + EconomyTopic8ExtData.questions +
-        EconomyTopic9Data.questions + EconomyTopic9ExtData.questions +
-        EconomyTopic10Data.questions + EconomyTopic10ExtData.questions +
-        ScienceTopic1Data.questions + ScienceTopic1ExtData.questions +
-        ScienceTopic2Data.questions + ScienceTopic2ExtData.questions +
-        ScienceTopic3Data.questions + ScienceTopic3ExtData.questions +
-        ScienceTopic4Data.questions + ScienceTopic4ExtData.questions +
-        ScienceTopic5Data.questions + ScienceTopic5ExtData.questions +
-        ScienceTopic6Data.questions + ScienceTopic6ExtData.questions +
-        ScienceTopic7Data.questions + ScienceTopic7ExtData.questions +
-        ScienceTopic8Data.questions + ScienceTopic8ExtData.questions +
-        ScienceTopic9Data.questions + ScienceTopic9ExtData.questions +
-        ScienceTopic10Data.questions + ScienceTopic10ExtData.questions +
-        WorldGkTopic1Data.questions + WorldGkTopic1ExtData.questions +
-        WorldGkTopic2Data.questions + WorldGkTopic2ExtData.questions +
-        WorldGkTopic3Data.questions + WorldGkTopic3ExtData.questions +
-        WorldGkTopic4Data.questions + WorldGkTopic4ExtData.questions +
-        WorldGkTopic5Data.questions + WorldGkTopic5ExtData.questions +
-        WorldGkTopic6Data.questions + WorldGkTopic6ExtData.questions +
-        WorldGkTopic7Data.questions + WorldGkTopic7ExtData.questions +
-        WorldGkTopic8Data.questions + WorldGkTopic8ExtData.questions +
-        WorldGkTopic9Data.questions + WorldGkTopic9ExtData.questions +
-        WorldGkTopic10Data.questions + WorldGkTopic10ExtData.questions +
-        SportsTopic1Data.questions + SportsTopic1ExtData.questions +
-        SportsTopic2Data.questions + SportsTopic2ExtData.questions +
-        SportsTopic3Data.questions + SportsTopic3ExtData.questions +
-        SportsTopic4Data.questions + SportsTopic4ExtData.questions +
-        SportsTopic5Data.questions + SportsTopic5ExtData.questions +
-        SportsTopic6Data.questions + SportsTopic6ExtData.questions +
-        SportsTopic7Data.questions + SportsTopic7ExtData.questions +
-        SportsTopic8Data.questions + SportsTopic8ExtData.questions +
-        SportsTopic9Data.questions + SportsTopic9ExtData.questions +
-        SportsTopic10Data.questions + SportsTopic10ExtData.questions +
-        ArtCultureTopic1Data.questions + ArtCultureTopic1ExtData.questions +
-        ArtCultureTopic2Data.questions + ArtCultureTopic2ExtData.questions +
-        ArtCultureTopic3Data.questions + ArtCultureTopic3ExtData.questions +
-        ArtCultureTopic4Data.questions + ArtCultureTopic4ExtData.questions +
-        ArtCultureTopic5Data.questions + ArtCultureTopic5ExtData.questions +
-        ArtCultureTopic6Data.questions + ArtCultureTopic6ExtData.questions +
-        ArtCultureTopic7Data.questions + ArtCultureTopic7ExtData.questions +
-        ArtCultureTopic8Data.questions + ArtCultureTopic8ExtData.questions +
-        ArtCultureTopic9Data.questions + ArtCultureTopic9ExtData.questions +
-        ArtCultureTopic10Data.questions + ArtCultureTopic10ExtData.questions +
-        StaticGkTopic1Data.questions + StaticGkTopic1ExtData.questions +
-        StaticGkTopic2Data.questions + StaticGkTopic2ExtData.questions +
-        StaticGkTopic3Data.questions + StaticGkTopic3ExtData.questions +
-        StaticGkTopic4Data.questions + StaticGkTopic4ExtData.questions +
-        StaticGkTopic5Data.questions + StaticGkTopic5ExtData.questions +
-        StaticGkTopic6Data.questions + StaticGkTopic6ExtData.questions +
-        StaticGkTopic7Data.questions + StaticGkTopic7ExtData.questions +
-        StaticGkTopic8Data.questions + StaticGkTopic8ExtData.questions +
-        StaticGkTopic9Data.questions + StaticGkTopic9ExtData.questions +
-        StaticGkTopic10Data.questions + StaticGkTopic10ExtData.questions +
-        RajasthanTopic1Data.questions + RajasthanTopic1ExtData.questions +
-        RajasthanTopic2Data.questions + RajasthanTopic2ExtData.questions +
-        RajasthanTopic3Data.questions + RajasthanTopic3ExtData.questions +
-        RajasthanTopic4Data.questions + RajasthanTopic4ExtData.questions +
-        RajasthanTopic5Data.questions + RajasthanTopic5ExtData.questions +
-        RajasthanTopic6Data.questions + RajasthanTopic6ExtData.questions +
-        RajasthanTopic7Data.questions + RajasthanTopic7ExtData.questions +
-        RajasthanTopic8Data.questions + RajasthanTopic8ExtData.questions +
-        RajasthanTopic9Data.questions + RajasthanTopic9ExtData.questions +
-        RajasthanTopic10Data.questions + RajasthanTopic10ExtData.questions
+    private fun loadBuiltIns() {
+        if (_allQuestions.isNotEmpty()) return
+        val sources: Array<List<GkQuestion>> = arrayOf(
+            HistoryTopic1Data.questions, HistoryTopic1ExtData.questions,
+            HistoryTopic2Data.questions, HistoryTopic2ExtData.questions,
+            HistoryTopic3Data.questions, HistoryTopic3ExtData.questions,
+            HistoryTopic4Data.questions, HistoryTopic4ExtData.questions,
+            HistoryTopic5Data.questions, HistoryTopic5ExtData.questions,
+            HistoryTopic6Data.questions, HistoryTopic6ExtData.questions,
+            HistoryTopic7Data.questions, HistoryTopic7ExtData.questions,
+            HistoryTopic8Data.questions, HistoryTopic8ExtData.questions,
+            HistoryTopic9Data.questions, HistoryTopic9ExtData.questions,
+            HistoryTopic10Data.questions, HistoryTopic10ExtData.questions,
+            PolityTopic1Data.questions, PolityTopic1ExtData.questions,
+            PolityTopic2Data.questions, PolityTopic2ExtData.questions,
+            PolityTopic3Data.questions, PolityTopic3ExtData.questions,
+            PolityTopic4Data.questions, PolityTopic4ExtData.questions,
+            PolityTopic5Data.questions, PolityTopic5ExtData.questions,
+            PolityTopic6Data.questions, PolityTopic6ExtData.questions,
+            PolityTopic7Data.questions, PolityTopic7ExtData.questions,
+            PolityTopic8Data.questions, PolityTopic8ExtData.questions,
+            PolityTopic9Data.questions, PolityTopic9ExtData.questions,
+            PolityTopic10Data.questions, PolityTopic10ExtData.questions,
+            GeographyTopic1Data.questions, GeographyTopic1ExtData.questions,
+            GeographyTopic2Data.questions, GeographyTopic2ExtData.questions,
+            GeographyTopic3Data.questions, GeographyTopic3ExtData.questions,
+            GeographyTopic4Data.questions, GeographyTopic4ExtData.questions,
+            GeographyTopic5Data.questions, GeographyTopic5ExtData.questions,
+            GeographyTopic6Data.questions, GeographyTopic6ExtData.questions,
+            GeographyTopic7Data.questions, GeographyTopic7ExtData.questions,
+            GeographyTopic8Data.questions, GeographyTopic8ExtData.questions,
+            GeographyTopic9Data.questions, GeographyTopic9ExtData.questions,
+            GeographyTopic10Data.questions, GeographyTopic10ExtData.questions,
+            EconomyTopic1Data.questions, EconomyTopic1ExtData.questions,
+            EconomyTopic2Data.questions, EconomyTopic2ExtData.questions,
+            EconomyTopic3Data.questions, EconomyTopic3ExtData.questions,
+            EconomyTopic4Data.questions, EconomyTopic4ExtData.questions,
+            EconomyTopic5Data.questions, EconomyTopic5ExtData.questions,
+            EconomyTopic6Data.questions, EconomyTopic6ExtData.questions,
+            EconomyTopic7Data.questions, EconomyTopic7ExtData.questions,
+            EconomyTopic8Data.questions, EconomyTopic8ExtData.questions,
+            EconomyTopic9Data.questions, EconomyTopic9ExtData.questions,
+            EconomyTopic10Data.questions, EconomyTopic10ExtData.questions,
+            ScienceTopic1Data.questions, ScienceTopic1ExtData.questions,
+            ScienceTopic2Data.questions, ScienceTopic2ExtData.questions,
+            ScienceTopic3Data.questions, ScienceTopic3ExtData.questions,
+            ScienceTopic4Data.questions, ScienceTopic4ExtData.questions,
+            ScienceTopic5Data.questions, ScienceTopic5ExtData.questions,
+            ScienceTopic6Data.questions, ScienceTopic6ExtData.questions,
+            ScienceTopic7Data.questions, ScienceTopic7ExtData.questions,
+            ScienceTopic8Data.questions, ScienceTopic8ExtData.questions,
+            ScienceTopic9Data.questions, ScienceTopic9ExtData.questions,
+            ScienceTopic10Data.questions, ScienceTopic10ExtData.questions,
+            WorldGkTopic1Data.questions, WorldGkTopic1ExtData.questions,
+            WorldGkTopic2Data.questions, WorldGkTopic2ExtData.questions,
+            WorldGkTopic3Data.questions, WorldGkTopic3ExtData.questions,
+            WorldGkTopic4Data.questions, WorldGkTopic4ExtData.questions,
+            WorldGkTopic5Data.questions, WorldGkTopic5ExtData.questions,
+            WorldGkTopic6Data.questions, WorldGkTopic6ExtData.questions,
+            WorldGkTopic7Data.questions, WorldGkTopic7ExtData.questions,
+            WorldGkTopic8Data.questions, WorldGkTopic8ExtData.questions,
+            WorldGkTopic9Data.questions, WorldGkTopic9ExtData.questions,
+            WorldGkTopic10Data.questions, WorldGkTopic10ExtData.questions,
+            SportsTopic1Data.questions, SportsTopic1ExtData.questions,
+            SportsTopic2Data.questions, SportsTopic2ExtData.questions,
+            SportsTopic3Data.questions, SportsTopic3ExtData.questions,
+            SportsTopic4Data.questions, SportsTopic4ExtData.questions,
+            SportsTopic5Data.questions, SportsTopic5ExtData.questions,
+            SportsTopic6Data.questions, SportsTopic6ExtData.questions,
+            SportsTopic7Data.questions, SportsTopic7ExtData.questions,
+            SportsTopic8Data.questions, SportsTopic8ExtData.questions,
+            SportsTopic9Data.questions, SportsTopic9ExtData.questions,
+            SportsTopic10Data.questions, SportsTopic10ExtData.questions,
+            ArtCultureTopic1Data.questions, ArtCultureTopic1ExtData.questions,
+            ArtCultureTopic2Data.questions, ArtCultureTopic2ExtData.questions,
+            ArtCultureTopic3Data.questions, ArtCultureTopic3ExtData.questions,
+            ArtCultureTopic4Data.questions, ArtCultureTopic4ExtData.questions,
+            ArtCultureTopic5Data.questions, ArtCultureTopic5ExtData.questions,
+            ArtCultureTopic6Data.questions, ArtCultureTopic6ExtData.questions,
+            ArtCultureTopic7Data.questions, ArtCultureTopic7ExtData.questions,
+            ArtCultureTopic8Data.questions, ArtCultureTopic8ExtData.questions,
+            ArtCultureTopic9Data.questions, ArtCultureTopic9ExtData.questions,
+            ArtCultureTopic10Data.questions, ArtCultureTopic10ExtData.questions,
+            StaticGkTopic1Data.questions, StaticGkTopic1ExtData.questions,
+            StaticGkTopic2Data.questions, StaticGkTopic2ExtData.questions,
+            StaticGkTopic3Data.questions, StaticGkTopic3ExtData.questions,
+            StaticGkTopic4Data.questions, StaticGkTopic4ExtData.questions,
+            StaticGkTopic5Data.questions, StaticGkTopic5ExtData.questions,
+            StaticGkTopic6Data.questions, StaticGkTopic6ExtData.questions,
+            StaticGkTopic7Data.questions, StaticGkTopic7ExtData.questions,
+            StaticGkTopic8Data.questions, StaticGkTopic8ExtData.questions,
+            StaticGkTopic9Data.questions, StaticGkTopic9ExtData.questions,
+            StaticGkTopic10Data.questions, StaticGkTopic10ExtData.questions,
+            RajasthanTopic1Data.questions, RajasthanTopic1ExtData.questions,
+            RajasthanTopic2Data.questions, RajasthanTopic2ExtData.questions,
+            RajasthanTopic3Data.questions, RajasthanTopic3ExtData.questions,
+            RajasthanTopic4Data.questions, RajasthanTopic4ExtData.questions,
+            RajasthanTopic5Data.questions, RajasthanTopic5ExtData.questions,
+            RajasthanTopic6Data.questions, RajasthanTopic6ExtData.questions,
+            RajasthanTopic7Data.questions, RajasthanTopic7ExtData.questions,
+            RajasthanTopic8Data.questions, RajasthanTopic8ExtData.questions,
+            RajasthanTopic9Data.questions, RajasthanTopic9ExtData.questions,
+            RajasthanTopic10Data.questions, RajasthanTopic10ExtData.questions
+        )
+        for (source in sources) {
+            populateQuestions(source)
+        }
     }
 
     init {
         // Pre-populate with built-in high yield question banks immediately
-        populateQuestions(builtInQuestions)
+        loadBuiltIns()
     }
 
     /**
@@ -335,7 +341,7 @@ object QuizQuestionDatabase {
     val allQuestions: List<GkQuestion>
         get() {
             if (_allQuestions.isEmpty()) {
-                populateQuestions(builtInQuestions)
+                loadBuiltIns()
             }
             return _allQuestions
         }
@@ -356,10 +362,10 @@ object QuizQuestionDatabase {
                 val rawCatId = normCatId.removePrefix("cat_")
                 val catTitle = q.category.lowercase()
 
-                questionsByCategory.getOrPut(normCatId) { mutableListOf() }.add(q)
-                questionsByCategory.getOrPut("cat_$rawCatId") { mutableListOf() }.add(q)
-                questionsByCategory.getOrPut(rawCatId) { mutableListOf() }.add(q)
-                questionsByCategory.getOrPut(catTitle) { mutableListOf() }.add(q)
+                val categoryKeys = setOf(normCatId, "cat_$rawCatId", rawCatId, catTitle)
+                for (key in categoryKeys) {
+                    questionsByCategory.getOrPut(key) { mutableListOf() }.add(q)
+                }
             }
         }
     }
@@ -373,7 +379,7 @@ object QuizQuestionDatabase {
             if (isInitialized) return
             try {
                 // Ensure built-ins are populated
-                populateQuestions(builtInQuestions)
+                loadBuiltIns()
 
                 val loadedList = loadAllQuestionsFromAssets(context)
                 if (loadedList.isNotEmpty()) {
@@ -562,16 +568,22 @@ object QuizQuestionDatabase {
             QuestionSource.RANDOM_GK -> allQuestions
         }
 
-        if (categoryFiltered.isEmpty()) {
+        val safeCategoryFiltered = if (categoryFiltered.isNotEmpty()) {
+            categoryFiltered
+        } else {
+            allQuestions
+        }
+
+        if (safeCategoryFiltered.isEmpty()) {
             return emptyList()
         }
 
         // Step 2: Filter by difficulty if specified
         val difficultyFiltered = if (config.difficulty == "Mixed" || config.difficulty.isBlank()) {
-            categoryFiltered
+            safeCategoryFiltered
         } else {
-            val matching = categoryFiltered.filter { it.difficulty.equals(config.difficulty, ignoreCase = true) }
-            if (matching.isNotEmpty()) matching else categoryFiltered
+            val matching = safeCategoryFiltered.filter { it.difficulty.equals(config.difficulty, ignoreCase = true) }
+            if (matching.isNotEmpty()) matching else safeCategoryFiltered
         }
 
         // Step 3: Fill to requested count without duplication

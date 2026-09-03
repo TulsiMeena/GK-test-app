@@ -46,6 +46,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -189,13 +190,14 @@ private fun HomeTopHeader(
     onNotificationsClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
-    val initials = userName.trim()
-        .split(" ")
-        .filter { it.isNotBlank() }
-        .map { it.first().uppercaseChar() }
-        .joinToString("")
-        .take(2)
-        .ifEmpty { "GX" }
+    val initials = remember(userName) {
+        val parts = userName.trim().split("\\s+".toRegex()).filter { it.isNotEmpty() }
+        when {
+            parts.size >= 2 -> "${parts[0].firstOrNull() ?: 'G'}${parts[1].firstOrNull() ?: 'X'}".uppercase()
+            parts.isNotEmpty() && parts[0].isNotEmpty() -> parts[0].take(2).uppercase()
+            else -> "GX"
+        }
+    }
 
     val unreadCount = com.example.services.GyanixNotificationService.unreadCount
 

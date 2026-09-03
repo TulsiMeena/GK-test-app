@@ -363,7 +363,11 @@ class MainActivity : ComponentActivity() {
                     },
                     onFinishQuiz = { result ->
                         lastSessionResult = result
-                        com.example.ui.data.GyanixLocalDataManager.recordQuizResult(result)
+                        try {
+                            com.example.ui.data.GyanixLocalDataManager.recordQuizResult(result)
+                        } catch (e: Throwable) {
+                            android.util.Log.e("MainActivity", "Error recording quiz result: ${e.message}", e)
+                        }
                         navigateTo(GyanixScreen.RESULT_OVERVIEW)
                     }
                 )

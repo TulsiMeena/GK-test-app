@@ -683,8 +683,8 @@ object GyanixLocalDataManager {
 
         // 1. Weak Areas recommendation
         val weakCategories = getWeakCategories()
-        if (weakCategories.isNotEmpty()) {
-            val primeWeak = weakCategories.first()
+        val primeWeak = weakCategories.firstOrNull()
+        if (primeWeak != null) {
             val acc = getCategoryAccuracy(primeWeak.id)
             recommendations.add(
                 PracticeRecommendation(
@@ -718,8 +718,8 @@ object GyanixLocalDataManager {
 
         // 2. Strong Areas recommendation
         val strongCategories = getStrongCategories()
-        if (strongCategories.isNotEmpty()) {
-            val primeStrong = strongCategories.first()
+        val primeStrong = strongCategories.firstOrNull()
+        if (primeStrong != null) {
             val acc = getCategoryAccuracy(primeStrong.id)
             recommendations.add(
                 PracticeRecommendation(
